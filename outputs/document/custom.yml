@@ -1,0 +1,54 @@
+font:
+  catalog:
+    merge: true
+    M+_1mn:
+      normal: mplus1mn-regular-ascii-conums.ttf
+      bold: mplus1mn-regular-ascii-conums.ttf
+      italic: mplus1mn-regular-ascii-conums.ttf
+      bold_italic: mplus1mn-regular-ascii-conums.ttf
+    SourceCode:
+      normal: SourceCodePro-Regular.ttf
+      bold: SourceCodePro-Bold.ttf
+      italic: SourceCodePro-Light.ttf
+  fallbacks:
+    - M+_1mn
+conum:
+  font-family: M+_1mn
+code:
+  font-family: SourceCode
+page:
+  layout: portrait
+  margin: [0.75in, 1in, 0.75in, 1in]
+  size: A4
+base:
+  font-color: #333333
+  font-family: Times-Roman
+  font-size: 12
+  line-height-length: 17
+  line-height: $base-line-height-length / $base-font-size
+vertical-spacing: $base-line-height-length
+heading:
+  font-color: #262626
+  font-size: 17
+  font-style: bold
+  line-height: 1.2
+  margin-bottom: $vertical-spacing
+link:
+  font-color: #002FA7
+outline-list:
+  indent: $base-font-size * 1.5
+footer:
+  height: $base-line-height-length * 2.5
+  line-height: 1
+  recto:
+    right:
+      content: '{chapter-title} | *{page-number}*'
+  verso:
+    left:
+      content: '*{page-number}* | {chapter-title}'
+title-page:
+  authors:
+    display: none
+  logo:
+    image: image:logo.png[]
+  background-image: image:background.png[]

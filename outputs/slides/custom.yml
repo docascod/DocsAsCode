@@ -1,0 +1,96 @@
+font:
+  catalog:
+    merge: true
+    OpenSansLight:
+      normal: OpenSans-Light.ttf
+      italic: OpenSans-LightItalic.ttf
+      bold: OpenSans-Semibold.ttf
+      bold_italic: OpenSans-SemiboldItalic.ttf
+    OpenSans:
+      normal: OpenSans-Regular.ttf
+      italic: OpenSans-Italic.ttf
+      bold: OpenSans-Bold.ttf
+      bold_italic: OpenSans-BoldItalic.ttf
+    Raleway:
+      normal: raleway-normal.ttf
+      italic: raleway-italic.ttf
+      bold: raleway-bold.ttf
+      bold_italic: raleway-bold_italic.ttf
+    M+_1mn:
+      normal: mplus1mn-regular-ascii-conums.ttf
+      bold: mplus1mn-regular-ascii-conums.ttf
+      italic: mplus1mn-regular-ascii-conums.ttf
+      bold_italic: mplus1mn-regular-ascii-conums.ttf
+    SourceCode:
+      normal: SourceCodePro-Regular.ttf
+      bold: SourceCodePro-Bold.ttf
+      italic: SourceCodePro-Light.ttf
+  fallbacks:
+    - M+_1mn       
+base:
+  font-family: OpenSans
+  font-size: 24
+  line-height-length: 17
+conum:
+  font-family: M+_1mn
+  font-size: $base-font-size
+code:
+  font-family: SourceCode
+  font-size: $base-font-size
+page:
+  layout: landscape
+  margin: [0.75in, 1in, 0.75in, 1in]
+  size: [285mm,508mm]
+image:
+  align: center
+title-page:
+  authors:
+    display: none
+  background-image: image:background.png[fit=cover]
+  title:
+    font-size: 72
+    font-style: normal
+    align: center
+    margin-page-top: 130mm
+heading:
+  h1:
+    font-size: 28
+    font-style: $title-page-title-font-style
+    align: $title-page-title-align
+    margin-page-top: $title-page-title-margin-page-top
+  h2:
+    font-size: 20
+  h3:
+    font-size: 14
+  h4:
+    font-size: 12
+  h5:
+    font-size: 11
+  h6:
+    font-size: 10
+header:
+  height: 0.75in
+  line-height: 1
+  background-color: #000000
+  font-color: #FFFFFF
+  font-size: 20
+  vertical-align: middle
+  recto: &shared_header
+    right:
+      content: '{chapter-title} : {section-title}'
+    left:
+      content: 
+  verso: *shared_header
+footer:
+  height: $base-line-height-length * 2.5
+  font-size: 14
+  font-style: normal
+  line-height: 1
+  recto: &shared_footer
+    left:
+      content: 
+    right:
+      content: '*{page-number}*/*{page-count}*'
+  verso: *shared_footer
+
+  

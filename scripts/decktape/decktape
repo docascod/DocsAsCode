@@ -1,0 +1,1 @@
+node /decktape/decktape.js --chrome-path=chromium-browser --chrome-arg=--no-sandbox $@
