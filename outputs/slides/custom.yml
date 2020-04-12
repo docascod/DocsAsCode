@@ -43,6 +43,9 @@ page:
   size: [285mm,508mm]
 image:
   align: center
+  caption:
+    text-align: center
+    align: center
 title-page:
   authors:
     display: none
