@@ -45,3 +45,8 @@ footer:
       content: $footer-recto-right-content
     left:
       content: $footer-recto-left-content
+image:
+  align: center
+  caption:
+    text-align: center
+    align: center

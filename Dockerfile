@@ -117,8 +117,7 @@ RUN echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repos
     nss@edge \
     ttf-freefont@edge \
     wqy-zenhei@edge && \
-    mv /etc/fonts/conf.d/44-wqy-zenhei.conf /etc/fonts/conf.d/74-wqy-zenhei.conf && \
-    rm -rf /var/cache/apk/*
+    mv /etc/fonts/conf.d/44-wqy-zenhei.conf /etc/fonts/conf.d/74-wqy-zenhei.conf
 
 COPY --from=node_builder /decktape /decktape
 ADD scripts/decktape/decktape /usr/local/bin/decktape
@@ -138,12 +137,20 @@ ENV PATH="/pandoc/bin:${PATH}"
 # Grammalecte installation
 COPY --from=grammalecte_builder /grammalecte /grammalecte
 
+# aspell installation
+RUN apk add --no-cache \
+    aspell \
+    aspell-en \
+    aspell-fr
+
+RUN rm -rf /var/cache/apk/*
+
 # ----- DocsAsCode -----
 
 # RUN npm install -g @alexlafroscia/yaml-merge
 
-ADD scripts/docsascode/plain_meta.tex /usr/local/bin/templates/plain_meta.tex
-ADD scripts/docsascode/clearForCheck.lua /usr/local/bin/templates/clearForCheck.lua
+ADD scripts/docsascode/*.tex /usr/local/bin/templates/
+ADD scripts/docsascode/*.lua /usr/local/bin/templates/
 ADD scripts/docsascode/*.sh /usr/local/bin/
 
 # ------ Themes & checks integration --------
