@@ -1,6 +1,11 @@
 font:
   catalog:
     merge: true
+    OpenSans:
+      normal: OpenSans-Regular.ttf
+      italic: OpenSans-Italic.ttf
+      bold: OpenSans-Bold.ttf
+      bold_italic: OpenSans-BoldItalic.ttf    
     M+_1mn:
       normal: mplus1mn-regular-ascii-conums.ttf
       bold: mplus1mn-regular-ascii-conums.ttf
@@ -12,21 +17,29 @@ font:
       italic: SourceCodePro-Light.ttf
   fallbacks:
     - M+_1mn
-conum:
-  font-family: M+_1mn
-code:
-  font-family: SourceCode
+    - SourceCode    
 page:
   layout: portrait
   margin: [0.75in, 1in, 0.75in, 1in]
   size: A4
 base:
-  font-color: #333333
-  font-family: Times-Roman
+  font-color: #5e5e5e
+  font-family: OpenSans
   font-size: 12
   line-height-length: 17
   line-height: $base-line-height-length / $base-font-size
 vertical-spacing: $base-line-height-length
+conum:
+  font-family: M+_1mn
+  font-size: $base-font-size
+code:
+  background-color: #f0f4f9
+  border-offset: 2
+  border-radius: 3
+  border-width: 0.5
+  border-color: #bad4ed
+  font-family: SourceCode
+  font-size: $base-font-size
 heading:
   font-color: #262626
   font-size: 17
@@ -58,6 +71,12 @@ image:
     text-align: center
     align: center
 table:
+  body:
+    stripe-background-color: #f0f4f9
+  border-color: #dfe2e5
+  grid-color: $table-border-color
   head:
-    background-color: #f0f0f0
-  grid-color: #ff0000
+    background-color: #bad4ed
+    border-bottom-width: 1
+  cell:
+    padding: [2,5,2,5]
