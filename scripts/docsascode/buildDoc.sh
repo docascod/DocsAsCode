@@ -65,6 +65,8 @@ function build_doc {
                cp -f $output_path/* $current_output_template_path 2>/dev/null
        done
 
+       cp -rf /usr/lib/ruby/gems/2.6.0/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
+
        echo " - process output: "$output
 
        # prepare to launch commands to produce output
