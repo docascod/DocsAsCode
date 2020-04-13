@@ -57,3 +57,7 @@ image:
   caption:
     text-align: center
     align: center
+table:
+  head:
+    background-color: #f0f0f0
+  grid-color: #ff0000

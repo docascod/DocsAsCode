@@ -10,7 +10,7 @@ function process {
     local options_doctype='-a doctype=book'
     local options_higlighter='-a source-highlighter=rouge -a rouge-style=monokai_sublime -a icons=font'
     local options_diagram='-r asciidoctor-diagram -a imagesoutdir=/tmp/'
-    local options_style='-a toc -a table-stripes=even -a pdf-style=custom.yml -a pdf-fontsdir=/fonts/ -a pdf-stylesdir=/tmp/buildir/'
+    local options_style='-a toc -a table-stripes=even -a pdf-theme=dac_custom -a pdf-themesdir=/tmp/buildir/'
     local options_output='-o '$destination_folder/$filename.pdf
     
     2asciidoc.sh $input_file $source_folder/.$filename.adoc
