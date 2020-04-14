@@ -69,7 +69,7 @@ ARG revealjs_version=3.9.2
 
 ENV REVEALJS_VERSION=${revealjs_version}
 
-RUN mkdir /revealjs && wget -q https://nc.q2r.net/s/4nmKxWRC2t5a8f5/download -P /tmp/ \
+RUN mkdir /revealjs && wget -q https://transfer.q2r.net/MCaDZ/${REVEALJS_VERSION}.tar.gz -P /tmp/ \
     && tar xzf /tmp/${REVEALJS_VERSION}.tar.gz --strip-components 1 -C /revealjs/
 
 # ------ Final dockerfile ------
