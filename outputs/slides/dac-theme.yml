@@ -45,6 +45,8 @@ code:
   border-color: #bad4ed
   font-family: SourceCode
   font-size: $base-font-size - 5
+link:
+  font-color: #3968b5
 literal:
   background-color: #e6eef6
   border-offset: $code-border-offset

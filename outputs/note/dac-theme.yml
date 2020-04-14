@@ -46,10 +46,18 @@ heading:
   font-style: bold
   line-height: 1.2
   margin-bottom: $vertical-spacing
-  link:
-    font-color: #002FA7
-  outline-list:
-    indent: $base-font-size * 1.5
+link:
+  font-color: #3968b5
+literal:
+  background-color: #e6eef6
+  border-offset: $code-border-offset
+  border-radius: $code-border-radius
+  border-width: $code-border-width
+  border-color: $code-border-color
+  font-size: $base-font-size
+  font-family: OpenSans
+outline-list:
+  indent: $base-font-size * 1.5
 footer:
   height: $base-line-height-length * 2.5
   line-height: 1
