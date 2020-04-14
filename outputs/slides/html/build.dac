@@ -1,0 +1,44 @@
+#! /bin/bash
+# set -xe
+
+function process {
+    local input_file=$1
+    local source_folder=$2
+    local destination_folder=$3
+    local filename=$4
+
+    custom_destination_folder=$destination_folder/slidesHTML/
+    local options_higlighter='-a source-highlighter=highlightjs'
+    local options_diagram='-r asciidoctor-diagram'
+    local options_style='-a customcss=/tmp/buildir/custom.css -a imagesoutdir='$custom_destination_folder/'/'
+    local options_output='-o '$custom_destination_folder/$filename'.html'
+
+    2asciidoc.sh $input_file $source_folder/.$filename.adoc
+    
+    # replace line break with revealjs specific lb
+    sed -i -e "s/<<</== !/g" $source_folder/.$filename.adoc
+
+    # remove toc from asciidoc (must be defined by template)
+    sed -i '/^:toc:/ d' $source_folder/.$filename.adoc 
+
+    mkdir -p $custom_destination_folder
+    cp -r /reveal.js/ $custom_destination_folder/
+
+
+    asciidoctor-revealjs $options_diagram $options_style $options_higlighter $source_folder/.$filename.adoc $options_output
+    chmod -R a+w $custom_destination_folder/
+    
+    echo "  → file generated: "$filename.html
+
+    decktape automatic $custom_destination_folder/$filename.html $custom_destination_folder/$filename.pdf >> /dev/null
+    echo "  → file generated: "$filename.pdf
+}
+
+function postprocess {
+    local input_file=$1
+    local source_folder=$2
+    local destination_folder=$3
+    local filename=$4
+
+    rm -f $source_folder/.$filename.adoc
+}

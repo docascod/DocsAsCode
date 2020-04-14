@@ -1,0 +1,1 @@
+/mermaid/node_modules/.bin/mmdc --puppeteerConfigFile /mermaid/puppeteer.json $@

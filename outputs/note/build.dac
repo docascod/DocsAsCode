@@ -1,0 +1,34 @@
+#! /bin/bash
+# set -xe
+
+function process {
+    local input_file=$1
+    local source_folder=$2
+    local destination_folder=$3
+    local filename=$4
+
+    local options_doctype='-a doctype=article'
+    local options_higlighter='-a source-highlighter=rouge -a rouge-style=monokai_sublime -a icons=font'
+    local options_diagram='-r asciidoctor-diagram -a imagesoutdir=/tmp/'
+    local options_style='-a table-stripes=even -a pdf-theme=dac_custom -a pdf-themesdir=/tmp/buildir/'
+    local options_output='-o '$destination_folder/note_$filename.pdf
+
+    2asciidoc.sh $input_file $source_folder/.$filename.adoc
+
+    # remove toc from asciidoc (must be defined by template)
+    sed -i '/^:toc:/ d' $source_folder/.$filename.adoc
+
+    asciidoctor-pdf $options_doctype $options_style $options_higlighter $options_diagram $source_folder/.$filename.adoc $options_output
+
+    echo "  → file generated: "note_$filename.pdf
+}
+
+function postprocess {
+    local input_file=$1
+    local source_folder=$2
+    local destination_folder=$3
+    local filename=$4
+
+    rm -rf $destination_folder/.asciidoctor/
+    rm -f $source_folder/.$filename.adoc
+}

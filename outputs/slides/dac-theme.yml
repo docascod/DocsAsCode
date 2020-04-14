@@ -1,0 +1,138 @@
+font:
+  catalog:
+    merge: true
+    OpenSansLight:
+      normal: OpenSans-Light.ttf
+      italic: OpenSans-LightItalic.ttf
+      bold: OpenSans-Semibold.ttf
+      bold_italic: OpenSans-SemiboldItalic.ttf
+    OpenSans:
+      normal: OpenSans-Regular.ttf
+      italic: OpenSans-Italic.ttf
+      bold: OpenSans-Bold.ttf
+      bold_italic: OpenSans-BoldItalic.ttf
+    M+_1mn:
+      normal: mplus1mn-regular-ascii-conums.ttf
+      bold: mplus1mn-regular-ascii-conums.ttf
+      italic: mplus1mn-regular-ascii-conums.ttf
+      bold_italic: mplus1mn-regular-ascii-conums.ttf
+    SourceCode:
+      normal: SourceCodePro-Regular.ttf
+      bold: SourceCodePro-Bold.ttf
+      italic: SourceCodePro-Light.ttf
+  fallbacks:
+    - M+_1mn  
+    - SourceCode
+page:
+  layout: landscape
+  size: [286mm,508mm]
+  margin: [160,75,45,75]
+base:
+  font-family: OpenSans
+  font-size: 20
+  font-color: #5e5e5e
+  align: justify
+  line-height-length: 30
+  line-height: $base-line-height-length / $base-font-size
+conum:
+  font-family: M+_1mn
+  font-size: $base-font-size
+code:
+  background-color: #f0f4f9
+  border-offset: 2
+  border-radius: 3
+  border-width: 0.5
+  border-color: #bad4ed
+  font-family: SourceCode
+  font-size: $base-font-size - 5
+literal:
+  background-color: #e6eef6
+  border-offset: $code-border-offset
+  border-radius: $code-border-radius
+  border-width: $code-border-width
+  border-color: $code-border-color
+  font-size: $base-font-size
+  font-family: OpenSans
+vertical-spacing: $base-line-height-length
+title-page:
+  authors:
+    display: none
+  background-image: 
+  title:
+    font-size: 66
+    font-style: normal
+    font-color: #287be3
+    align: center
+  subtitle:
+    display: 
+    font-size: 40
+    font-style: italic
+    font-color: $title-page-title-font-color
+    align: center
+heading:
+  h1:
+    font-size: $base-font-size + 20
+    font-style: $title-page-title-font-style
+    font-color: $title-page-title-font-color
+    align: $title-page-title-align
+    margin-page-top: 50
+  h2:
+    font-size: $base-font-size + 30
+    font-color: $title-page-title-font-color
+    font-style: normal
+    align: center
+    margin-top: $vertical-spacing * 1.2
+    margin-bottom: 20
+    margin-page-top: 50
+  h3:
+    font-size: $base-font-size + 15
+    font-color: $title-page-title-font-color
+    margin-top: $vertical-spacing * 1.2
+  h4:
+    font-size: $base-font-size + 5
+    font-color: #000000
+    margin-top: $vertical-spacing * 1.0
+  h5:
+    font-size: $base-font-size + 2
+    font-color: #000000
+    margin-top: $vertical-spacing * 0.75
+  h6:
+    font-size: $base-font-size
+    font-color: #000000
+    margin-top: $vertical-spacing * 0.5
+thematic-break:
+  border-color: $title-page-title-font-color
+  border-width: 0.5
+  margin-top: 0
+header:
+  height: 60
+  line-height: 1
+  background-color: #f0f4f9
+  font-color: #5e5e5e
+  font-size: 18
+  font-style: bold
+  vertical-align: middle
+  padding: [0,-50,0,-50]
+  recto: &shared_header
+    right:
+      content: '{section-or-chapter-title}'
+    left:
+      content: image:logo.png[fit:none]
+  verso: *shared_header
+footer:
+  height: 30
+  font-family: OpenSans
+  font-color: $title-page-title-font-color
+  font-size: 12
+  font-style: normal
+  line-height: 1
+  vertical-align: middle
+  padding: $header-padding
+  recto: &shared_footer
+    left:
+      content: '{document-title}'
+    right:
+      content: '*{page-number}*/*{page-count}*'
+  verso: *shared_footer
+image:
+  align: center

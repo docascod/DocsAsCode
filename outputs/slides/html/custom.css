@@ -1,0 +1,13 @@
+.reveal section.background {
+    background-color: red;
+}
+
+.reveal section.title h1 {
+    margin-top: 2.3em;
+}
+
+.reveal section.title small {
+    margin-top: 15.3em;
+    font-weight: bold;
+    color: white;
+}
