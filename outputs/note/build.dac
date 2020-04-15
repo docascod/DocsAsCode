@@ -17,6 +17,9 @@ function process {
 
     # remove toc from asciidoc (must be defined by template)
     sed -i '/^:toc:/ d' $source_folder/.$filename.adoc
+    # remove numbered for headings
+    sed -i '/^:numbered:/ d' $source_folder/.$filename.adoc  
+    
 
     asciidoctor-pdf $options_doctype $options_style $options_higlighter $options_diagram $source_folder/.$filename.adoc $options_output
 
