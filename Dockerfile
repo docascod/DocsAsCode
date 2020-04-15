@@ -143,8 +143,6 @@ RUN apk add --no-cache \
     aspell-en \
     aspell-fr
 
-RUN rm -rf /var/cache/apk/*
-
 # ----- DocsAsCode -----
 
 # RUN npm install -g @alexlafroscia/yaml-merge
