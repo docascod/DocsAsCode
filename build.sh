@@ -1,1 +1,1 @@
-docker build -t dasc/docsascode .
+docker build -t docod/docsascode .
