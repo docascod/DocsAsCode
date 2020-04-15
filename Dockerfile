@@ -76,6 +76,10 @@ RUN mkdir /revealjs && wget -q https://transfer.q2r.net/MCaDZ/${REVEALJS_VERSION
 
 FROM asciidoctor/docker-asciidoctor
 
+# Write UID/GID overwrite
+ENV PID=1000
+ENV GID=1000
+
 LABEL MAINTAINERS="docsascode@protonmail.com"
 
 # qpdf installation

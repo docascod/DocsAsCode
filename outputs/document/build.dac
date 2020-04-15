@@ -28,4 +28,6 @@ function postprocess {
 
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
+
+    chown $PID:$GID $destination_folder/$filename.pdf
 }
