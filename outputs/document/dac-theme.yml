@@ -17,7 +17,7 @@ font:
       italic: SourceCodePro-Light.ttf
   fallbacks:
     - M+_1mn
-    - SourceCode    
+    - SourceCode
 page:
   layout: portrait
   margin: [0.75in, 1in, 0.75in, 1in]
