@@ -45,6 +45,8 @@ code:
   border-color: #bad4ed
   font-family: SourceCode
   font-size: $base-font-size - 5
+link:
+  font-color: #3968b5
 literal:
   background-color: #e6eef6
   border-offset: $code-border-offset
@@ -136,3 +138,16 @@ footer:
   verso: *shared_footer
 image:
   align: center
+  caption:
+    text-align: center
+    align: center
+table:
+  body:
+    stripe-background-color: #f0f4f9
+  border-color: #dfe2e5
+  grid-color: $table-border-color
+  head:
+    background-color: #bad4ed
+    border-bottom-width: 1
+  cell:
+    padding: [2,5,2,5]

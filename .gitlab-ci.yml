@@ -1,0 +1,31 @@
+---
+
+stages:
+  - build
+
+build:staging:
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  script:
+    - docker build -t docascod/docsascode:${CI_COMMIT_REF_NAME} .
+  except:
+    - master
+    - tags
+
+build:release:
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p "$CI_REGISTRY_PASSWORD"
+  script:
+    - docker build -t docascod/docsascode:${CI_COMMIT_REF_NAME} .
+    - docker tag docascod/docsascode:${CI_COMMIT_REF_NAME} docascod/docsascode:latest
+    - docker push docascod/docsascode:${CI_COMMIT_REF_NAME}
+    - docker push docascod/docsascode:latest
+  only:
+    - master
+    - tags

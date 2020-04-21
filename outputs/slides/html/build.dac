@@ -41,4 +41,6 @@ function postprocess {
     local filename=$4
 
     rm -f $source_folder/.$filename.adoc
+    
+    chown $PID:$GID $custom_destination_folder/$filename.html $custom_destination_folder/$filename.pdf
 }

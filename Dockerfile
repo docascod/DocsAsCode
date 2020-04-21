@@ -69,12 +69,16 @@ ARG revealjs_version=3.9.2
 
 ENV REVEALJS_VERSION=${revealjs_version}
 
-RUN mkdir /revealjs && wget -q https://github.com/hakimel/reveal.js/archive/${REVEALJS_VERSION}.tar.gz -P /tmp/ \
+RUN mkdir /revealjs && wget -q https://transfer.q2r.net/MCaDZ/${REVEALJS_VERSION}.tar.gz -P /tmp/ \
     && tar xzf /tmp/${REVEALJS_VERSION}.tar.gz --strip-components 1 -C /revealjs/
 
 # ------ Final dockerfile ------
 
 FROM asciidoctor/docker-asciidoctor
+
+# Write UID/GID overwrite
+ENV PID=1000
+ENV GID=1000
 
 LABEL MAINTAINERS="docsascode@protonmail.com"
 
@@ -151,9 +155,9 @@ ADD scripts/docsascode/*.sh /usr/local/bin/
 
 # ------ Themes & checks integration --------
 
-ADD outputs/ /output/
-ADD checks/ /checks/
 ADD fonts/* /usr/lib/ruby/gems/2.6.0/gems/asciidoctor-pdf-${ASCIIDOCTOR_PDF_VERSION}/data/fonts/
+ADD checks/ /checks/
+ADD outputs/ /output/
 
 RUN addgroup -g 1000 node && \
     adduser -u 1000 -G node -s /bin/sh -D node && \

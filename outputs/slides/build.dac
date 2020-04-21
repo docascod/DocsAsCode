@@ -10,13 +10,15 @@ function process {
     local options_doctype='-a doctype=book'
     local options_higlighter='-a source-highlighter=rouge -a rouge-style=monokai_sublime -a icons=font'
     local options_diagram='-r asciidoctor-diagram -a imagesoutdir=/tmp/'
-    local options_style='-a table-stripes=even -a pdf-theme=dac_custom -a pdf-themesdir=/tmp/buildir/'
+    local options_style='-a table-stripes=even -a chapter-label -a pdf-theme=dac_custom -a pdf-themesdir=/tmp/buildir/'
     local options_output='-o '$destination_folder/slides_$filename.pdf
 
     2asciidoc.sh $input_file $source_folder/.$filename.adoc
 
     # remove toc from asciidoc (must be defined by template)
-    sed -i '/^:toc:/ d' $source_folder/.$filename.adoc    
+    sed -i '/^:toc:/ d' $source_folder/.$filename.adoc  
+    # remove numbered for headings
+    sed -i '/^:numbered:/ d' $source_folder/.$filename.adoc   
 
     asciidoctor-pdf $options_doctype $options_style $options_higlighter $options_diagram $source_folder/.$filename.adoc $options_output
 
@@ -31,4 +33,6 @@ function postprocess {
 
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
+    
+    chown $PID:$GID $destination_folder/slides_$filename.pdf
 }
