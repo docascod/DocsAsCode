@@ -3,6 +3,17 @@
 stages:
   - build
 
+build:staging:
+  stage: build
+  image: docker:dind
+  services:
+    - docker:dind
+  script:
+    - docker build -t docascod/docsascode:${CI_COMMIT_REF_NAME} .
+  except:
+    - master
+    - tags
+
 build:release:
   stage: build
   image: docker:dind
