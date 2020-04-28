@@ -15,7 +15,7 @@ input_file="/tmp/cleared.txt"
 # clear input doc
 case "$1" in
 *.md ) 
-        pandoc -s -f markdown -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
+        pandoc -s -f gfm -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
         ;;
 *.rst )
         pandoc -s -f rst -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
