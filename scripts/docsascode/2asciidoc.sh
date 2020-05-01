@@ -24,9 +24,9 @@ case "$1" in
 esac
 
 # clear diagram blocs
-sed -i -e "s/\[source,graphviz\]/\[graphviz/g" $2
-sed -i -e "s/\[source,mermaid\]/\[mermaid/g" $2
-sed -i -e "s/\[source,plantuml\]/\[plantuml/g" $2
-sed -i -e "s/\[source,vega-lite\]/\[vegalite/g" $2
+sed -i -e "s/\[source,graphviz/\[graphviz/g" $2
+sed -i -e "s/\[source,mermaid/\[mermaid/g" $2
+sed -i -e "s/\[source,plantuml/\[plantuml/g" $2
+sed -i -e "s/\[source,vega-lite/\[vegalite/g" $2
 
 exit 0
