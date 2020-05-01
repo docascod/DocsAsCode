@@ -48,6 +48,9 @@ function build_doc {
   # set merged destination output folder
   current_output_template_path=/tmp/buildir/
 
+  # load utilities
+  source parse_yaml.sh
+
   # for each output
   for output in "${outputs_arr[@]}"; do
        # create temporary folder for custom output
@@ -69,8 +72,9 @@ function build_doc {
 
        echo " - process output: "$output
 
-       # prepare to launch commands to produce output
-       source $current_output_template_path/build.dac
+      # prepare to launch commands to produce output
+      eval $(parse_yaml $current_output_template_path/config.yaml)
+      source $current_output_template_path/build.dac
 
        # launch process
       process $input_file $pathname $destination_folder $filenameNoExtension

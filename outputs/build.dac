@@ -1,0 +1,10 @@
+#! /bin/bash
+# set -xe
+
+function process {
+    echo "nothing to process"
+}
+
+function postprocess {
+    echo "nothing to postprocess"
+}
