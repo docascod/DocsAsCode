@@ -4,3 +4,6 @@ A toolset to check and generate enterprise compliant documents, based on easy do
 
 ![](archi.png)
 
+## Documentation
+
+* [Getting started](docs/getting_started.md)
