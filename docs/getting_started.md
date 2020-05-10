@@ -7,7 +7,7 @@ lang: en-EN
 
 1. Open your favorite [Mardown editor](https://marktext.app/) and start a new document.
 
-2. Add a header (yaml front matter) with :
+2. Add a header (yaml style) with :
    
    * `title` The title (first level heading #) of your document
    
@@ -19,25 +19,35 @@ lang: en-EN
    
    * `author`, `subtitle` should be set
 
+Example:
+
+```yaml
+title: My document
+keywords: output.document
+lang: en-EN
+author: DocsAsCode
+subtitle: A simple document
+```
+
 3. Write your document
 
-> Because `title` is always set in header, first level heading (#) must not be used 
+> Because `title` is always set in header, first level heading (`#`) must not be used 
 
 4. Build your document
 
-```docker
+```bash
 docker run --rm -it -v <your directory>:/documents/ docascod/docsascode build <your document>.md
 ```
 
-> <your document>.md must be located in <your directory>
+> \<your document\>.md must be located in \<your directory\>
 
 ## Pimp your document
 
-Markdown syntax is wonderful because is simplicity. But when you write a professional document you need some advanced features !
+Markdown syntax is wonderful because of its simplicity. But when you write a professional document you need some advanced features !
 
 ### Page break
 
-Markdown syntax not allow to insert page break, but when you write slides you need it !
+Markdown syntax does not allow to insert page break, but when you write slides you need it !
 
 So, to set a page break you can use `<<<`
 
@@ -51,9 +61,9 @@ content after page break
 
 ### Special text block
 
-Sometimes you want to highlight some text block, like tip, warning ... Mardown not allow to do that easily !
+Sometimes you want to highlight some text block, tip, warning ... Mardown does not allow to do that easily !
 
-You can use these syntax :
+You can use this syntax :
 
 ```asciidoc
 NOTE: Just a note...
@@ -99,7 +109,7 @@ All options can be combined (with alternative text):
 
 ### Code bloc
 
-You can insert code block in Mardown and specify used language.
+You can insert block of code in Mardown and specify language to highlight.
 
 Also now, you can :
 
@@ -135,7 +145,7 @@ Some diagrams syntax can be interpreted during build and replaced by its represe
 
 **Mermaid**
 
-Mermaid allow to design `Flow chart`, `Sequence diagrams`, `Class diagrams`, `State diagrams`, `Gantt`, `Pie` and `Git chart`. Full syntax on [https://mermaid-js.github.io](https://mermaid-js.github.io/mermaid/#/)
+Mermaid allows designing of `Flow chart`, `Sequence diagrams`, `Class diagrams`, `State diagrams`, `Gantt`, `Pie` and `Git chart`. Full syntax on [https://mermaid-js.github.io](https://mermaid-js.github.io/mermaid/#/)
 
 ```markdown
 A flow chart example :
@@ -175,7 +185,7 @@ A pie chart example :
 
 **PlantUML**
 
-On the origin, PlantUML is specialized on UML diagrams, but it can also display Gantt, Mindmap... Full syntax : https://plantuml.com/
+PlantUML is originally specialized in UML diagrams, but it can also display Gantt, Mindmap... Full syntax : https://plantuml.com/
 
 ```markdown
 A sequence diagram example :
