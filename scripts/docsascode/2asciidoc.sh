@@ -8,11 +8,13 @@ fi
 
 case "$1" in
 *.md ) 
+        tmpfile=/tmp/work.tmp
         # Fix a bug in kramdoc about checkboxes
-        sed -e "s/\* \[ \] /\* \\\[ \\\] /g" $1 > $1.tmp
-        sed -i -e "s/\* \[x\] /\* \\\[x\\\] /gI" $1.tmp
+        sed -e "s/\* \[ \] /\* \\\[ \\\] /g" $1 > $tmpfile
+        sed -i -e "s/\* \[x\] /\* \\\[x\\\] /gI" $tmpfile
         # end of fix
-        kramdoc --format=GFM --output=$2 $1.tmp
+        kramdoc --format=GFM --output=$2 $tmpfile
+        rm -f $tmpfile
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
         ;;
