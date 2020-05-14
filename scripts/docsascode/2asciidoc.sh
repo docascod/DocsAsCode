@@ -8,7 +8,13 @@ fi
 
 case "$1" in
 *.md ) 
-        kramdoc --format=GFM --output=$2 $1
+        # Fix a bug in kramdoc about checkboxes
+        sed -e "s/\* \[ \] /\* \\\[ \\\] /g" $1 > $1.tmp
+        sed -i -e "s/\* \[x\] /\* \\\[x\\\] /gI" $1.tmp
+        # end of fix
+        kramdoc --format=GFM --output=$2 $1.tmp
+        # fix attributes bad convertion
+        sed -i -e "s/\\\{/{/g" $2
         ;;
 *.rst )
         pandoc -s -f rst -t asciidoc $1 -o $2
@@ -18,10 +24,11 @@ case "$1" in
         ;;
 
 *)
-        echo "extension not supported. only rst,md, adoc."
+        echo "extension not supported. only rst,md and adoc."
         exit -1
         ;;
 esac
+
 
 # clear diagram blocs
 sed -i -e "s/\[source,graphviz/\[graphviz/g" $2
