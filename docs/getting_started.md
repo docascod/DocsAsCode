@@ -7,31 +7,32 @@ lang: en-EN
 
 1. Open your favorite [Mardown editor](https://marktext.app/) and start a new document.
 
-2. Add a header (yaml style) with :
-   
+2. Add a YAML header (yaml front matter) with :
+
    * `title` The title (first level heading #) of your document
-   
+
    * `keywords` To indicate the desired output(s)
-     
+
      > choose at less one of : output.document , output.slides, output.note
-   
+
    * `lang` To indicate the language of the document (ie : en-EN, fr-FR)
-   
-   * `author`, `subtitle` should be set
 
-Example:
+   * `author` Author of this document. It should be san array
 
-```yaml
-title: My document
-keywords: output.document
-lang: en-EN
-author: DocsAsCode
-subtitle: A simple document
-```
+  > subtitle : should be added in the end of title (separated by `:`)
+
+  Example:
+  
+  ```yaml
+  title: 'My document: a subtitle'
+  keywords: [keyword1, output.document, output.slides]
+  lang: en-EN
+  author: DocsAsCode
+  ```
 
 3. Write your document
 
-> Because `title` is always set in header, first level heading (`#`) must not be used 
+> Because `title` is always set in header, first level heading (`#`) must not be used
 
 4. Build your document
 
@@ -138,12 +139,27 @@ Also now, you can :
   ​```
   ```
 
+* Embed external source file
+
+  ```markdown
+  ​```json
+  include::myfile.json[]
+  ​```
+  ```
+
+You can also specify to display just a piece of code :
+
+  ```markdown
+  ​```json
+  include::myfile.json[lines:5..10]
+  ​```
+  ```
 
 ### Diagrams
 
 Some diagrams syntax can be interpreted during build and replaced by its representation !!
 
-**Mermaid**
+#### Mermaid
 
 Mermaid allows designing of `Flow chart`, `Sequence diagrams`, `Class diagrams`, `State diagrams`, `Gantt`, `Pie` and `Git chart`. Full syntax on [https://mermaid-js.github.io](https://mermaid-js.github.io/mermaid/#/)
 
@@ -156,9 +172,9 @@ A flow chart example :
 ​```
 ```
 
-**Vega-lite**
+#### Vega-lite
 
-Vega-lite opens the data visualization world for you. You can load external data and display : bar chart, line chart, heat map, pie, map and more. Full syntax on https://vega.github.io/vega-lite/
+Vega-lite opens the data visualization world for you. You can load external data and display : bar chart, line chart, heat map, pie, map and more. Full syntax on [](https://vega.github.io/vega-lite/)
 
 ```markdown
 A pie chart example :
@@ -183,9 +199,9 @@ A pie chart example :
 ​```
 ```
 
-**PlantUML**
+#### PlantUML
 
-PlantUML is originally specialized in UML diagrams, but it can also display Gantt, Mindmap... Full syntax : https://plantuml.com/
+PlantUML is originally specialized in UML diagrams, but it can also display Gantt, Mindmap... Full syntax : [](https://plantuml.com/)
 
 ```markdown
 A sequence diagram example :
@@ -201,16 +217,16 @@ Alice <-- Bob: another authentication Response
 ​```
 ```
 
-**draw.io**
+#### draw.io
 
 A special case for draw.io. We can't interpret draw.io code. But if you choose to export your diagram as png with embedded code, you can :
 
 * display it as normal image
 * edit it in draw.io
 
-**extras**
+#### extras
 
- * *caption* : YES you can have a caption after your diagram ! Add it just before diagram, must start with `.` 
+*caption* : YES you can have a caption after your diagram ! Add it just before diagram, must start with `.`
 
    ```markdown
    .mermaid caption
@@ -219,4 +235,3 @@ A special case for draw.io. We can't interpret draw.io code. But if you choose t
         A -->|Some Text| B
    ​```
    ```
-
