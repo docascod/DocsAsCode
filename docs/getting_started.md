@@ -23,11 +23,16 @@ lang: en-EN
 
   Example:
   
-  ```yaml
+  ```markdown
+  ---
   title: 'My document: a subtitle'
   keywords: [keyword1, output.document, output.slides]
   lang: en-EN
   author: DocsAsCode
+  ---
+
+  your document body
+
   ```
 
 3. Write your document
