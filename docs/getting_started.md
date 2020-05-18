@@ -178,7 +178,7 @@ A flow chart example :
 
 #### Vega-lite
 
-Vega-lite opens the data visualization world for you. You can load external data and display : bar chart, line chart, heat map, pie, map and more. Full syntax on [](https://vega.github.io/vega-lite/)
+Vega-lite opens the data visualization world for you. You can load external data and display : bar chart, line chart, heat map, pie, map and more. Full syntax on [https://vega.github.io](https://vega.github.io/vega-lite/)
 
 ```markdown
 A pie chart example :
@@ -206,7 +206,8 @@ A pie chart example :
 
 #### PlantUML
 
-PlantUML is originally specialized in UML diagrams, but it can also display Gantt, Mindmap... Full syntax : [](https://plantuml.com/)
+PlantUML is originally specialized in UML diagrams, but it can also display Gantt, Mindmap... 
+Full syntax : [https://plantuml.com/](https://plantuml.com/)
 
 ```markdown
 A sequence diagram example :
