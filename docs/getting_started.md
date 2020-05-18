@@ -1,9 +1,6 @@
----
-title: Getting started with Mardown
-lang: en-EN
----
+# Getting started with Markdown
 
-## Getting started
+## First document
 
 1. Open your favorite [Mardown editor](https://marktext.app/) and start a new document.
 
@@ -17,7 +14,7 @@ lang: en-EN
 
    * `lang` To indicate the language of the document (ie : en-EN, fr-FR)
 
-   * `author` Author of this document. It should be san array
+   * `author` Author of this document. It should be an array
 
   > subtitle : should be added in the end of title (separated by `:`)
 
@@ -45,7 +42,7 @@ lang: en-EN
 docker run --rm -it -v <your directory>:/documents/ docascod/docsascode build <your document>.md
 ```
 
-> \<your document\>.md must be located in \<your directory\>
+> \<your document\>.md and its dependencies (images, source) must be located in \<your directory\>
 
 ## Pimp your document
 
@@ -67,7 +64,7 @@ content after page break
 
 ### Special text block
 
-Sometimes you want to highlight some text block, tip, warning ... Mardown does not allow to do that easily !
+Sometimes you want to highlight some text block (tip, warning ...). Mardown does not allow to do that easily !
 
 You can use this syntax :
 
@@ -101,7 +98,7 @@ So, now you can :
   ![pdfwidth=50%](/path/to/image.png)
   ```
 
-* You can add a **caption** (legend) after your image :
+* **add a caption** (legend) after your image :
   
   ```markdown
   ![title="This is my image"](/path/to/image.png)
@@ -119,7 +116,7 @@ You can insert block of code in Mardown and specify language to highlight.
 
 Also now, you can :
 
-* Add callout (comment on lines)
+* **Add callout** (comment on lines)
   
   ```markdown
   ​```json
@@ -133,7 +130,7 @@ Also now, you can :
   <2> comment on key2
   ```
   
-* Display lines number, by adding `linenums` keyword just after language name
+* **Display lines number**, by adding `linenums` keyword just after language name
 
   ```markdown
   ​```json,linenums
@@ -144,7 +141,7 @@ Also now, you can :
   ​```
   ```
 
-* Embed external source file
+* **Embed external source file**
 
   ```markdown
   ​```json
@@ -152,7 +149,7 @@ Also now, you can :
   ​```
   ```
 
-You can also specify to display just a piece of code :
+  You can also specify to display just a piece of code :
 
   ```markdown
   ​```json
@@ -176,6 +173,8 @@ A flow chart example :
      A -->|Some Text| B
 ​```
 ```
+
+![mermaid](images/mermaid.png)
 
 #### Vega-lite
 
@@ -203,6 +202,7 @@ A pie chart example :
 }
 ​```
 ```
+![vegalite](images/vegalite.png)
 
 #### PlantUML
 
