@@ -60,6 +60,9 @@ function build_doc {
   # set merged destination output folder
   local current_output_template_path=/tmp/buildir/
 
+  # load utilities
+  source parse_yaml.sh
+
   # for each output
   for output in "${outputs_arr[@]}"; do
        # create temporary folder for custom output
