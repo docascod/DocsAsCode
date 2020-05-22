@@ -51,6 +51,8 @@ heading:
   font-style: bold
   line-height: 1.2
   margin-bottom: $vertical-spacing
+  chapter_prefix: ~
+  numbered: true
 link:
   font-color: #3968b5
 literal:
@@ -96,3 +98,8 @@ table:
 ulist:
   marker:
     font-family: Noto Serif
+toc:
+  display: true
+  levels: 2
+output:
+  prefix: ~

@@ -51,6 +51,7 @@ heading:
   font-style: bold
   line-height: 1.2
   margin-bottom: $vertical-spacing
+  numbered: false
 link:
   font-color: #3968b5
 literal:
@@ -94,3 +95,7 @@ table:
 ulist:
   marker:
     font-family: Noto Serif
+toc:
+  display: false
+output:
+  prefix: note_

@@ -6,12 +6,19 @@ if [ "$#" -ne 2 ]; then
     exit -1
 fi
 
+workingdir=$PWD
+
+currentdir="$(dirname "$1")"
+filename="$(basename -- "$1")"
+
 case "$1" in
 *.md ) 
         pandoc -s -f markdown -t plain --template=/usr/local/bin/templates/plain_meta.tex $1 > $2
         ;;
 *.rst )
-        pandoc -s -f rst -t plain --template=/usr/local/bin/templates/plain_meta.tex $1 > $2
+        cd $currentdir
+        pandoc -s -f rst -t plain --template=/usr/local/bin/templates/plain_meta.tex $filename > $2
+        cd $workingdir
         ;;
 *.adoc )
         asciidoctor $1 -a doctype=book -o /tmp/asciidoctmp.html

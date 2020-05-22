@@ -6,7 +6,12 @@ if [ "$#" -ne 2 ]; then
     exit -1
 fi
 
-tmpfile=/tmp/work.tmp
+workingdir=$PWD
+
+tmpfile=$1.tmp
+currenttmpdir="$(dirname "$tmpfile")"
+filenametmp="$(basename -- "$tmpfile")"
+
 case "$1" in
 *.md ) 
         # Fix a bug in kramdoc about checkboxes
@@ -17,9 +22,15 @@ case "$1" in
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
         ;;
-*.rst )
+*.rst ) 
         sed -e "s/\.\. newslide::/<<</g" $1 > $tmpfile
-        pandoc -s -f rst -t asciidoc $tmpfile -o $2
+        # fix bug with enbeded rst -> go into input folder
+        cd $currenttmpdir
+        pandoc -s -f rst -t asciidoc $filenametmp -o $2 
+        # go back into working dir
+        cd $workingdir
+        # fix attributes bad convertion
+        sed -i -e "s/\\\{/{/g" $2
         ;;
 *.adoc )
         cp $1 $2
