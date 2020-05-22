@@ -6,20 +6,31 @@ if [ "$#" -ne 2 ]; then
     exit -1
 fi
 
+workingdir=$PWD
+
+tmpfile=$1.tmp
+currenttmpdir="$(dirname "$tmpfile")"
+filenametmp="$(basename -- "$tmpfile")"
+
 case "$1" in
 *.md ) 
-        tmpfile=/tmp/work.tmp
         # Fix a bug in kramdoc about checkboxes
         sed -e "s/\* \[ \] /\* \\\[ \\\] /g" $1 > $tmpfile
         sed -i -e "s/\* \[x\] /\* \\\[x\\\] /gI" $tmpfile
         # end of fix
         kramdoc --format=GFM --output=$2 $tmpfile
-        rm -f $tmpfile
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
         ;;
-*.rst )
-        pandoc -s -f rst -t asciidoc $1 -o $2
+*.rst ) 
+        sed -e "s/\.\. newslide::/<<</g" $1 > $tmpfile
+        # fix bug with enbeded rst -> go into input folder
+        cd $currenttmpdir
+        pandoc -s -f rst -t asciidoc $filenametmp -o $2 
+        # go back into working dir
+        cd $workingdir
+        # fix attributes bad convertion
+        sed -i -e "s/\\\{/{/g" $2
         ;;
 *.adoc )
         cp $1 $2
@@ -30,6 +41,8 @@ case "$1" in
         exit -1
         ;;
 esac
+rm -f $tmpfile
+
 
 
 # clear diagram blocs

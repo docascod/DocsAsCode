@@ -1,6 +1,18 @@
 #! /bin/bash
 # set -xe
 
+# load utilities
+source parse_yaml.sh
+
+function cleanVar {
+    local varValue=$1
+    if [ -z varValue ] || [ "$varValue" = '~' ]
+    then
+        echo ""
+    else
+        echo $varValue
+    fi
+}
 
 function build_doc {
 
@@ -46,7 +58,7 @@ function build_doc {
   fi
 
   # set merged destination output folder
-  current_output_template_path=/tmp/buildir/
+  local current_output_template_path=/tmp/buildir/
 
   # load utilities
   source parse_yaml.sh
@@ -57,14 +69,15 @@ function build_doc {
        mkdir -p $current_output_template_path 2>/dev/null
 
        # split each output on . char
-       IFS='.' read -ra pathArray <<< "$output"
-       output_path=/_
+       IFS='.' read -r -a pathArray <<< "$output"
+
+       local output_path=/_
        # foreach part of the output
        for i in "${pathArray[@]}"; do
                # add this part to the source path
-               output_path=$output_path$i/
+               output_path+=$i/
 
-               # force copy on destination path
+               # force files (only) copy on destination path
                cp -f $output_path/* $current_output_template_path 2>/dev/null
        done
 
@@ -73,7 +86,10 @@ function build_doc {
        echo " - process output: "$output
 
       # prepare to launch commands to produce output
-      eval $(parse_yaml $current_output_template_path/config.yaml)
+      ## Ramdom bug with parse_yaml, sometimes it genrates double separator => fix with _# and sed
+      eval $(parse_yaml $current_output_template_path/config.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
+      eval $(parse_yaml $current_output_template_path/dac-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
+      eval $(parse_yaml $current_output_template_path/dac_custom-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
       source $current_output_template_path/build.dac
 
        # launch process

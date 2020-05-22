@@ -12,13 +12,20 @@ temp_output=$pathname
 destination_folder=$pathname
 input_file="/tmp/cleared.txt"
 
+workingdir=$PWD
+
+currentdir="$(dirname "$1")"
+filename="$(basename -- "$1")"
+
 # clear input doc
 case "$1" in
 *.md ) 
         pandoc -s -f gfm -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
         ;;
 *.rst )
+        cd $currentdir
         pandoc -s -f rst -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
+        cd $workingdir
         ;;
 *.adoc )
         asciidoctor $1 -a doctype=book -o /tmp/$filenameNoExtension.html        

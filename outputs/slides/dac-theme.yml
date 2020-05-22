@@ -77,6 +77,7 @@ title-page:
     font-color: $title-page-title-font-color
     align: center
 heading:
+  numbered: false
   h1:
     font-size: $base-font-size + 20
     font-style: $title-page-title-font-style
@@ -159,3 +160,8 @@ table:
 ulist:
   marker:
     font-family: Noto Serif
+toc:
+  display: false
+output:
+  prefix: slides_
+
