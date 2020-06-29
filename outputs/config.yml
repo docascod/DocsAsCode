@@ -1,18 +1,18 @@
 table:
-    stripes: even
-    caption_prefix: Table
+  stripes: even
+  caption_prefix: Table
 code:
-    linenums: false
-    theme: monokai_sublime
+  linenums: false
+  theme: monokai_sublime
 toc:
-    display: true
-    levels: 1
-    title: Table OF Contents
-    align: right
+  display: true
+  levels: 1
+  title: Table OF Contents
+  align: right
 image:
-    caption_prefix: Figure
+  caption_prefix: Figure
 heading:
-    numbered: false
-    chapter_prefix: Chapter
+  numbered: false
+  chapter_prefix: Chapter
 output:
-    prefix: ~
+  prefix: ~
