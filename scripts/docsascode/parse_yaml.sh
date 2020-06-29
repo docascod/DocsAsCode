@@ -71,7 +71,7 @@ function parse_yaml {
         vn=\"$prefix\" vn;
         full_vn=vn vname[indent];
         if(vn==\"$prefix\")vn=\"$prefix$separator\";
-      #   if(vn==\"_\")vn=\"__\";
+        if(vn==\"_\")vn=\"__\";
       }
       assignment[full_vn]=value;
       if(!match(assignment[vn], full_vn))assignment[vn]=assignment[vn] \" \" full_vn;

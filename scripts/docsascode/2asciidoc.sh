@@ -46,6 +46,7 @@ esac
 rm -f $tmpfile
 
 
+
 # clear diagram blocs
 sed -i -e "s/\[source,graphviz/\[graphviz/g" $2
 sed -i -e "s/\[source,mermaid/\[mermaid/g" $2
