@@ -21,6 +21,8 @@ case "$1" in
         kramdoc --format=GFM --output=$2 $tmpfile
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
+        # add autowidth on tables
+        sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2
         ;;
 *.rst ) 
         sed -e "s/\.\. newslide::/<<</g" $1 > $tmpfile
