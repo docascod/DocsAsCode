@@ -33,7 +33,6 @@ function process {
         cmd_args+=(-a toc-title="$toctile")
     fi
     cmd_args+=(-a experimental=true)
-    
 
     output_file_prefix=""
     if [ ! -z output_prefix ]; then output_file_prefix=$(cleanVar "$output_prefix") ; fi
