@@ -26,10 +26,13 @@ case "$1" in
         sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2
         ;;
 *.rst ) 
-        sed -e "s/\.\. newslide::/<<</g" $1 > $tmpfile
+        cp $1 $tmpfile
         # fix bug with enbeded rst -> go into input folder
         cd $currenttmpdir
-        pandoc -s -f rst -t asciidoc $filenametmp -o $2 
+        pandoc -s -f rst -t rst $filenametmp -o $2.tmp
+        sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
+        pandoc -s -f rst -t asciidoc $2.tmp -o $2
+        rm -f $2.tmp 
         # go back into working dir
         cd $workingdir
         # fix attributes bad convertion
