@@ -17,10 +17,13 @@ case "$1" in
         # Fix a bug in kramdoc about checkboxes
         sed -e "s/\* \[ \] /\* \\\[ \\\] /g" $1 > $tmpfile
         sed -i -e "s/\* \[x\] /\* \\\[x\\\] /gI" $tmpfile
-        # end of fix
+        # replace <kbd>
+        sed -i "s/<kbd>\(.*\)<\/kbd>/kbd:\[\1\]/g" $tmpfile
         kramdoc --format=GFM --output=$2 $tmpfile
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
+        # add autowidth on tables
+        sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2
         ;;
 *.rst ) 
         sed -e "s/\.\. newslide::/<<</g" $1 > $tmpfile

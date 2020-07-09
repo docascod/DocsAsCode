@@ -160,6 +160,14 @@ table:
 ulist:
   marker:
     font-family: Noto Serif
+key:
+  border-width: 0.5
+  border-radius: 1
+  border-color: #e7e7e7
+  background-color: #f5f5f5
+  border-offset: 4
+  font-color: #333333
+  font-style: italic
 toc:
   display: false
 output:
