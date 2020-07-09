@@ -47,7 +47,7 @@ RUN apk --no-cache --virtual .canvas-build-deps add \
 
 FROM alpine as pandoc_builder
 
-ARG pandoc_version=2.9.2
+ARG pandoc_version=2.10
 ENV PANDOC_VERSION=${pandoc_version}
 
 RUN mkdir /pandoc && wget -q https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz -P /tmp/ \
