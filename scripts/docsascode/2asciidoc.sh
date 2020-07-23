@@ -37,6 +37,7 @@ case "$1" in
         cd $workingdir
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
+        cp -f $2 /documents/
         ;;
 *.adoc )
         cp $1 $2

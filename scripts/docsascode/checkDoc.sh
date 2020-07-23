@@ -1,64 +1,90 @@
 #! /bin/bash
 # set -xe
-DEFAULT_OUTPUT=output.document
 
-scriptdir=/usr/local/bin/
-pathname=$(cd "$(dirname "$1")"; pwd)/
-filenameWithExtension=$(basename -- "$1")
-filenameNoExtension="${filenameWithExtension%.*}"
+function check_doc {
 
-temp_output=$pathname
-# "/tmp"
-destination_folder=$pathname
-input_file="/tmp/cleared.txt"
+        scriptdir=/usr/local/bin/
+        pathname=$(cd "$(dirname "$1")"; pwd)/
+        filenameWithExtension=$(basename -- "$1")
+        filenameNoExtension="${filenameWithExtension%.*}"
 
-workingdir=$PWD
+        temp_output=$pathname
+        # "/tmp"
+        destination_folder=$pathname
+        input_file="/tmp/cleared.txt"
 
-currentdir="$(dirname "$1")"
-filename="$(basename -- "$1")"
+        workingdir=$PWD
 
-# clear input doc
-case "$1" in
-*.md ) 
-        pandoc -s -f gfm -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
-        ;;
-*.rst )
-        cd $currentdir
-        pandoc -s -f rst -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
-        cd $workingdir
-        ;;
-*.adoc )
-        asciidoctor $1 -a doctype=book -o /tmp/$filenameNoExtension.html        
-        pandoc -s -f html -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua /tmp/$filenameNoExtension.html > $input_file
-        ;;
+        currentdir="$(dirname "$1")"
+        filename="$(basename -- "$1")"
 
-*)
-        echo "extension not supported. only rst,md, adoc."
-        exit -1
-        ;;
-esac
+        # clear input doc
+        case "$1" in
+        *.md ) 
+                pandoc -s -f gfm -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $1 > $input_file
+                ;;
+        *.rst )
+                cd $currentdir
+                pandoc -s -f rst -t rst $1 -o $input_file.tmp
+                pandoc -s -f rst -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $input_file.tmp > $input_file
+                rm -rf $input_file.tmp
+                cd $workingdir
+                ;;
+        *.adoc )
+                asciidoctor $1 -a doctype=book -o /tmp/$filenameNoExtension.html        
+                pandoc -s -f html -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua /tmp/$filenameNoExtension.html > $input_file
+                ;;
 
-# detect language
-sh $scriptdir/2meta.sh $1 /tmp/meta.txt
-source /tmp/meta.txt
-lang="fr-FR"
+        *)
+                echo "extension not supported. only rst,md, adoc."
+                exit -1
+                ;;
+        esac
 
-# check spell & grammar
-current_exe_folder="/tmp/_check/"
+        # detect language
+        sh $scriptdir/2meta.sh $1 /tmp/meta.txt
+        source /tmp/meta.txt
+        lang="fr-FR"
 
-mkdir $current_exe_folder
-cp -rf /checks/$lang/* $current_exe_folder
-if [[ -d $pathname/_check/$lang/ ]] ; then
-  cp -rf $pathname/_check/$lang/* $current_exe_folder
-fi
+        # check spell & grammar
+        current_exe_folder="/tmp/_check/"
 
-source $current_exe_folder/check.dac
-process $input_file
+        mkdir $current_exe_folder
+        cp -rf /checks/$lang/* $current_exe_folder
+        if [[ -d $pathname/_check/$lang/ ]] ; then
+        cp -rf $pathname/_check/$lang/* $current_exe_folder
+        fi
 
+        source $current_exe_folder/check.dac
 
-# export results in Junit XMl format
+        echo "process file: "$1
+        process $input_file
 
-# remove tmp files
-rm -f /tmp/cleared.txt >> /dev/null
-rm -f /tmp/meta.txt >> /dev/null
+        # export results in Junit XMl format
 
+        # remove tmp files
+        rm -f /tmp/cleared.txt >> /dev/null
+        rm -f /tmp/meta.txt >> /dev/null
+        rm -rf $current_exe_folder
+}
+
+while [[ $# -gt 0 ]]
+do
+
+  files=( $1 )
+  for file in "${files[@]}"
+  do
+
+    case "${file,,}" in
+    *.md | *.rst | *.adoc) 
+            check_doc $file
+            shift
+            ;;
+    *)
+            echo "extension not supported. only rst,md, adoc."
+            exit -1
+            ;;
+    esac
+
+  done
+done
