@@ -25,7 +25,7 @@ function check_doc {
                 ;;
         *.rst )
                 cd $currentdir
-                pandoc -s -f rst -t rst $1 -o $input_file.tmp
+                pandoc -s -f rst -t rst $filenameWithExtension -o $input_file.tmp
                 pandoc -s -f rst -t plain --lua-filter=/usr/local/bin/templates/clearForCheck.lua $input_file.tmp > $input_file
                 rm -rf $input_file.tmp
                 cd $workingdir
@@ -58,6 +58,13 @@ function check_doc {
         source $current_exe_folder/check.dac
 
         echo "process file: "$1
+
+        #merge all .dict file into a single with pws header and remove blank lines
+        echo personal_ws-1.1 ${lang:0:2} 0 > $current_exe_folder/.personnal.pws
+        cat $current_exe_folder/*.dict >> $current_exe_folder/.personnal.pws 2>/dev/null
+        sed -i '/^$/d' $current_exe_folder/.personnal.pws
+
+        #process check
         process $input_file
 
         # export results in Junit XMl format

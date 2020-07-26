@@ -37,6 +37,8 @@ case "$1" in
         cd $workingdir
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
+        # fix image bloc vs inline
+        sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
         cp -f $2 /documents/
         ;;
 *.adoc )

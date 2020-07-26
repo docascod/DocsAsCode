@@ -7,7 +7,7 @@ function process {
 
     local input_file=$1
     unspelled_array=()
-    IFS=$'\n' read -r -d '' -a unspelled_array < <( cat $input_file | aspell list --encoding utf-8 -l $lang -a --add-extra-dicts=$current_exe_folder/personnal.txt | uniq && printf '\0' )
+    IFS=$'\n' read -r -d '' -a unspelled_array < <( cat $input_file | aspell list --encoding utf-8 -l $lang -a --add-extra-dicts=$current_exe_folder/.personnal.pws | uniq && printf '\0' )
     if [ ${#unspelled_array[@]} -eq 0 ]; then
         echo $noErrorStr
     else
