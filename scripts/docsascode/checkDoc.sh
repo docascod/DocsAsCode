@@ -64,8 +64,11 @@ function check_doc {
         cat $current_exe_folder/*.dict >> $current_exe_folder/.personnal.pws 2>/dev/null
         sed -i '/^$/d' $current_exe_folder/.personnal.pws
 
-        #process check
-        process $input_file
+        #process check spell
+        check_spell $input_file
+
+        #process check grammar
+        check_grammar $input_file
 
         # export results in Junit XMl format
 
@@ -92,6 +95,8 @@ do
             exit -1
             ;;
     esac
-
   done
+
 done
+
+

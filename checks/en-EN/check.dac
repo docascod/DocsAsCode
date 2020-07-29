@@ -1,17 +1,21 @@
 #! /bin/bash
 # set -xe
 
-function process {
+function check_grammar {
+    local input_file=$1
+}
+
+function check_spell {
     local noErrorStr="→ Everything is OK !"
     local errorStr="→ MISSPELLED WORDS : "
 
     local input_file=$1
     unspelled_array=()
-    IFS=$'\n' read -r -d '' -a unspelled_array < <( cat $input_file | aspell list --encoding utf-8 -l $lang -a --add-extra-dicts=$current_exe_folder/.personnal.pws | uniq && printf '\0' )
+    IFS=$'\n' read -r -d '' -a unspelled_array < <( cat $input_file | aspell list --encoding utf-8 -l $lang -a --add-extra-dicts=$current_exe_folder/.personnal.pws | sort -u && printf '\0' )
     if [ ${#unspelled_array[@]} -eq 0 ]; then
-        echo $noErrorStr
+        echo -e "  - \e[32m"$noErrorStr"\e[0m"
     else
         printf -v unspelled_array_csv '%s,' "${unspelled_array[@]}"
-        echo $errorStr "${unspelled_array_csv%,}"
+        echo -e "  - \e[31m"${#unspelled_array[@]}" "$errorStr"\e[0m : "${unspelled_array_csv%,}
     fi
 }
