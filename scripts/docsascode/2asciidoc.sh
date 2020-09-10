@@ -30,14 +30,22 @@ case "$1" in
         cd $currenttmpdir
         pandoc -s -f rst -t rst $filenametmp -o $2.tmp
         sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
+
+        
+        
+        
+        
+        
+        
+        
+        
+        sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
         pandoc -s -f rst -t asciidoc $2.tmp -o $2
         rm -f $2.tmp 
         # go back into working dir
         cd $workingdir
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
-        # fix image bloc vs inline
-        sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
         ;;
 *.adoc )
         cp $1 $2
@@ -49,6 +57,9 @@ case "$1" in
         ;;
 esac
 rm -f $tmpfile
+
+# fix image bloc vs inline
+sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
 
 # clear diagram blocs
 sed -i -e "s/\[source,graphviz/\[graphviz/g" $2
