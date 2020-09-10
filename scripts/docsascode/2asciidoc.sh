@@ -13,17 +13,15 @@ currenttmpdir="$(dirname "$tmpfile")"
 filenametmp="$(basename -- "$tmpfile")"
 
 case "$1" in
-*.md ) 
-        # Fix a bug in kramdoc about checkboxes
-        sed -e "s/\* \[ \] /\* \\\[ \\\] /g" $1 > $tmpfile
-        sed -i -e "s/\* \[x\] /\* \\\[x\\\] /gI" $tmpfile
-        # replace <kbd>
-        sed -i "s/<kbd>\(.*\)<\/kbd>/kbd:\[\1\]/g" $tmpfile
-        kramdoc --format=GFM --output=$2 $tmpfile
+*.md )
+        cp $1 $tmpfile
+        cd $currenttmpdir
+        sed -i "s/<kbd>\(.*\)<\/kbd>/kbd:\[\1\]/g" $filenametmp
+        pandoc -s -f markdown -t asciidoc --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
+        # go back into working dir
+        cd $workingdir
         # fix attributes bad convertion
-        sed -i -e "s/\\\{/{/g" $2
-        # add autowidth on tables
-        sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2
+        sed -i -e "s/\\\{/{/g" $2        
         ;;
 *.rst ) 
         cp $1 $tmpfile
@@ -52,12 +50,12 @@ case "$1" in
 esac
 rm -f $tmpfile
 
-
-
 # clear diagram blocs
 sed -i -e "s/\[source,graphviz/\[graphviz/g" $2
 sed -i -e "s/\[source,mermaid/\[mermaid/g" $2
 sed -i -e "s/\[source,plantuml/\[plantuml/g" $2
 sed -i -e "s/\[source,vega-lite/\[vegalite/g" $2
+sed -i -e "s/\[source,vegalite/\[vegalite/g" $2
+sed -i -e "s/\[source,vega/\[vega/g" $2
 
 exit 0
