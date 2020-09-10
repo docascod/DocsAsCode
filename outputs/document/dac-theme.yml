@@ -111,3 +111,7 @@ toc:
   levels: 2
 output:
   prefix: ~
+role:
+  yellow-background:
+    background-color: #FFFF00
+    

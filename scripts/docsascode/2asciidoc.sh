@@ -17,6 +17,7 @@ case "$1" in
         cp $1 $tmpfile
         cd $currenttmpdir
         sed -i "s/<kbd>\(.*\)<\/kbd>/kbd:\[\1\]/g" $filenametmp
+        sed -i "s/==\([^=].*[^=]\)==/[.yellow-background]#\1#/g" $filenametmp
         pandoc -s -f markdown -t asciidoc --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
         # go back into working dir
         cd $workingdir
@@ -37,7 +38,6 @@ case "$1" in
         sed -i -e "s/\\\{/{/g" $2
         # fix image bloc vs inline
         sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
-        cp -f $2 /documents/
         ;;
 *.adoc )
         cp $1 $2
