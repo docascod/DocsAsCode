@@ -85,4 +85,11 @@ sed -i -e "s/\[source,vega-lite/\[vegalite/g" $2
 sed -i -e "s/\[source,vegalite/\[vegalite/g" $2
 sed -i -e "s/\[source,vega/\[vega/g" $2
 
+# force break before subtitles
+# if [ ! -z heading_h2_breakbefore ] && [ '$heading_h2_breakbefore'  = true ]; then sed -i -e 's/^== /<<<\n== /g' $2 ; fi
+# if [ ! -z heading_h3_breakbefore ] && [ '$heading_h3_breakbefore'  = true ]; then sed -i -e 's/^=== /<<<\n=== /g' $2 ; fi
+# if [ ! -z heading_h4_breakbefore ] && [ '$heading_h4_breakbefore'  = true ]; then sed -i -e 's/^==== /<<<\n==== /g' $2 ; fi
+# if [ ! -z heading_h5_breakbefore ] && [ '$heading_h5_breakbefore'  = true ]; then sed -i -e 's/^===== /<<<\n===== /g' $2 ; fi
+# if [ ! -z heading_h6_breakbefore ] && [ '$heading_h6_breakbefore'  = true ]; then sed -i -e 's/^====== /<<<\n====== /g' $2 ; fi
+
 exit 0
