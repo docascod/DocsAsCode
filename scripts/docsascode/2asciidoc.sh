@@ -65,6 +65,9 @@ case "$1" in
 esac
 rm -f $tmpfile
 
+# add fullwidth on tables and autowidth on columns
+# if [ ! -z table_fullwidth ] && [ '$table_fullwidth'  = true ]; then sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2 ; fi
+
 # fix image bloc vs inline
 sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
 
