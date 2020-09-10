@@ -6,6 +6,10 @@ if [ "$#" -ne 2 ]; then
     exit -1
 fi
 
+twoColsStart="##2colsstart##"
+twoColsRow="##2colsrow##"
+twoColsEnd="##2colsend##"
+
 workingdir=$PWD
 
 tmpfile=$1.tmp
@@ -18,6 +22,9 @@ case "$1" in
         cd $currenttmpdir
         sed -i "s/<kbd>\(.*\)<\/kbd>/kbd:\[\1\]/g" $filenametmp
         sed -i "s/==\([^=].*[^=]\)==/[.yellow-background]#\1#/g" $filenametmp
+        sed -i -e "s/<!-- 2cols -->/$twoColsStart/g" $filenametmp
+        sed -i -e "s/<!-- newcol -->/$twoColsRow/g" $filenametmp
+        sed -i -e "s/<!-- end_2cols -->/$twoColsEnd/g" $filenametmp        
         pandoc -s -f markdown -t asciidoc --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
         # go back into working dir
         cd $workingdir
@@ -31,13 +38,13 @@ case "$1" in
         pandoc -s -f rst -t rst $filenametmp -o $2.tmp
         sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
 
-        
-        
-        
-        
-        
-        
-        
+        sed -i -e "s/^.. container:: sliderow/$twoColsStart/g" $2.tmp
+        sed -i -e "s/^[ \t]*.. container:: slidecol/$twoColsRow/g" $2.tmp
+        sed -i -e "s/^.. container:: endsliderow/$twoColsEnd/g" $2.tmp
+
+        sed -i -e "s/^.. container:: 2cols/$twoColsStart/g" $2.tmp
+        sed -i -e "s/^[ \t]*.. container:: newcol/$twoColsRow/g" $2.tmp
+        sed -i -e "s/^.. container:: end_2cols/$twoColsEnd/g" $2.tmp        
         
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
         pandoc -s -f rst -t asciidoc $2.tmp -o $2
@@ -60,6 +67,12 @@ rm -f $tmpfile
 
 # fix image bloc vs inline
 sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
+
+# manage multi columns
+sed -i -e "s/$twoColsStart/\[cols=2*a,%autowidth.stretch,frame=none,grid=none,stripes=none\]\n|===/g" $2
+sed -i -e "s/$twoColsRow/|/g" $2
+sed -i -e "s/$twoColsEnd/\|===/g" $2
+sed -i -e '/^____/d' $2
 
 # clear diagram blocs
 sed -i -e "s/\[source,graphviz/\[graphviz/g" $2
