@@ -9,6 +9,11 @@ function check_spell {
     local noErrorStr="→ Everything is OK !"
     local errorStr="→ MISSPELLED WORDS : "
 
+    # create personnal dict
+    echo personal_ws-1.1 ${lang:0:2} 0 utf-8 > $current_exe_folder/.personnal.pws
+    cat $current_exe_folder/.GLOBAL.dict >> $current_exe_folder/.personnal.pws 2>/dev/null
+    sed -i '/^$/d' $current_exe_folder/.personnal.pws
+
     local input_file=$1
     unspelled_array=()
     IFS=$'\n' read -r -d '' -a unspelled_array < <( cat $input_file | aspell list --encoding utf-8 -l $lang -a --add-extra-dicts=$current_exe_folder/.personnal.pws | sort -u && printf '\0' )

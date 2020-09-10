@@ -6,12 +6,14 @@ function Table(table)
     return {}
 end  
 
-function Image (elem)
+function Image(elem)
     return {}
 end
 
+function Header(elem)
+    return {}
+end
 
-
--- function Code(inline)
---     return {}
--- end
+function Code(inline)
+    return {}
+end
