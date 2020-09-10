@@ -172,4 +172,6 @@ toc:
   display: false
 output:
   prefix: slides_
-
+role:
+  yellow-background:
+    background-color: #FFFF00

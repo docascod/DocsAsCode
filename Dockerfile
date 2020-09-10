@@ -1,5 +1,7 @@
 FROM node:12.13.0-alpine as node_builder
 
+ARG mermaid_version=8.8.0
+
 ENV NODE_ENV production
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV NPM_CONFIG_LOGLEVEL=error
@@ -21,7 +23,7 @@ RUN npm install --build-from-source=hummus && \
 
 WORKDIR /mermaid
 
-RUN npm install mermaid.cli
+RUN npm install @mermaid-js/mermaid-cli@${mermaid_version}
 ADD scripts/mermaid/puppeteer.json ./
 
 WORKDIR /vega
@@ -145,9 +147,11 @@ RUN apk add --no-cache \
 
 RUN rm -rf /var/cache/apk/*
 
-# ----- DocsAsCode -----
 
-# RUN npm install -g @alexlafroscia/yaml-merge
+# yq installation
+RUN wget $(curl -s https://api.github.com/repos/mikefarah/yq/releases/latest | grep browser_download_url | grep linux_amd64 | cut -d '"' -f 4) -O /usr/bin/yq && chmod +x /usr/bin/yq
+
+# ----- DocsAsCode -----
 
 ADD scripts/docsascode/*.tex /usr/local/bin/templates/
 ADD scripts/docsascode/*.lua /usr/local/bin/templates/

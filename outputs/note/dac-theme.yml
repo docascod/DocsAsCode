@@ -107,4 +107,7 @@ toc:
   display: false
 output:
   prefix: note_
+role:
+  yellow-background:
+    background-color: #FFFF00
   
