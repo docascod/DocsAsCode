@@ -54,7 +54,7 @@ ENV PANDOC_VERSION=${pandoc_version}
 
 RUN mkdir /pandoc && wget -q https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz -P /tmp/ \
     && tar xzf /tmp/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz --strip-components 1 -C /pandoc/ \
-    && rm -f /tmp/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz && ls -al /usr/local/
+    && rm -f /tmp/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz
 
 FROM alpine as grammalecte_builder
 
@@ -159,7 +159,8 @@ ADD scripts/docsascode/*.sh /usr/local/bin/
 
 # ------ Themes & checks integration --------
 
-ADD fonts/* /usr/lib/ruby/gems/2.6.0/gems/asciidoctor-pdf-${ASCIIDOCTOR_PDF_VERSION}/data/fonts/
+ADD fonts/* /tmp/fonts/
+RUN mv /tmp/fonts/* $(gem environment gemdir)/gems/asciidoctor-pdf-${ASCIIDOCTOR_PDF_VERSION}/data/fonts/
 ADD checks/ /checks/
 ADD outputs/ /output/
 
