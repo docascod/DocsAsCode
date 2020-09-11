@@ -38,13 +38,13 @@ case "$1" in
         pandoc -s -f rst -t rst $filenametmp -o $2.tmp
         sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
 
-        sed -i -e "s/^.. container:: sliderow/$twoColsStart/g" $2.tmp
+        sed -i -e "s/^[ \t]*.. container:: sliderow/$twoColsStart/g" $2.tmp
         sed -i -e "s/^[ \t]*.. container:: slidecol/$twoColsRow/g" $2.tmp
-        sed -i -e "s/^.. container:: endsliderow/$twoColsEnd/g" $2.tmp
+        sed -i -e "s/^[ \t]*.. container:: endsliderow/$twoColsEnd/g" $2.tmp
 
-        sed -i -e "s/^.. container:: 2cols/$twoColsStart/g" $2.tmp
+        sed -i -e "s/^[ \t]*.. container:: 2cols/$twoColsStart/g" $2.tmp
         sed -i -e "s/^[ \t]*.. container:: newcol/$twoColsRow/g" $2.tmp
-        sed -i -e "s/^.. container:: end_2cols/$twoColsEnd/g" $2.tmp        
+        sed -i -e "s/^[ \t]*.. container:: end_2cols/$twoColsEnd/g" $2.tmp        
         
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
         pandoc -s -f rst -t asciidoc $2.tmp -o $2
