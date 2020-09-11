@@ -37,7 +37,7 @@ case "$1" in
         cd $currenttmpdir
         pandoc -s -f rst -t rst $filenametmp -o $2.tmp
         sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
-
+        
         sed -i -e "s/^[ \t]*.. container:: sliderow/$twoColsStart/g" $2.tmp
         sed -i -e "s/^[ \t]*.. container:: slidecol/$twoColsRow/g" $2.tmp
         sed -i -e "s/^[ \t]*.. container:: endsliderow/$twoColsEnd/g" $2.tmp
