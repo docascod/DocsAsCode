@@ -49,12 +49,20 @@ case "$1" in
         sed -i -e "s/^\([ \t]*\).. container:: end_2cols/\1$twoColsEnd/g" $2.tmp        
 
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
+
         pandoc -s -f rst -t asciidoc $2.tmp -o $2
         rm -f $2.tmp 
         # go back into working dir
         cd $workingdir
         # fix attributes bad convertion
         sed -i -e "s/\\\{/{/g" $2
+        # remove text bloc title
+        sed -i -e "/^\.Note/d" $2
+        sed -i -e "/^\.Warning/d" $2
+        sed -i -e "/^\.Tip/d" $2
+        sed -i -e "/^\.Caution/d" $2
+        sed -i -e "/^\.Important/d" $2
+
         ;;
 *.adoc )
         cp $1 $2
