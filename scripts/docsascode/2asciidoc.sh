@@ -1,6 +1,8 @@
 #! /bin/bash
 # set -xe
 
+source yq_functions.sh
+
 if [ "$#" -ne 2 ]; then
     echo "Illegal number of parameters"
     exit -1
@@ -38,14 +40,14 @@ case "$1" in
         pandoc -s -f rst -t rst $filenametmp -o $2.tmp
         sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
 
-        sed -i -e "s/^[ \t]*.. container:: sliderow/$twoColsStart/g" $2.tmp
-        sed -i -e "s/^[ \t]*.. container:: slidecol/$twoColsRow/g" $2.tmp
-        sed -i -e "s/^[ \t]*.. container:: endsliderow/$twoColsEnd/g" $2.tmp
+        sed -i -e "s/^\([ \t]*\).. container:: sliderow/\1$twoColsStart/g" $2.tmp
+        sed -i -e "s/^\([ \t]*\).. container:: slidecol/\1$twoColsRow/g" $2.tmp
+        sed -i -e "s/^\([ \t]*\).. container:: endsliderow/\1$twoColsEnd/g" $2.tmp
 
-        sed -i -e "s/^[ \t]*.. container:: 2cols/$twoColsStart/g" $2.tmp
-        sed -i -e "s/^[ \t]*.. container:: newcol/$twoColsRow/g" $2.tmp
-        sed -i -e "s/^[ \t]*.. container:: end_2cols/$twoColsEnd/g" $2.tmp        
-        
+        sed -i -e "s/^\([ \t]*\).. container:: 2cols/\1$twoColsStart/g" $2.tmp
+        sed -i -e "s/^\([ \t]*\).. container:: newcol/\1$twoColsRow/g" $2.tmp
+        sed -i -e "s/^\([ \t]*\).. container:: end_2cols/\1$twoColsEnd/g" $2.tmp        
+
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
         pandoc -s -f rst -t asciidoc $2.tmp -o $2
         rm -f $2.tmp 
@@ -72,10 +74,12 @@ rm -f $tmpfile
 sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
 
 # manage multi columns
-sed -i -e "s/$twoColsStart/\[cols=2*a,%autowidth.stretch,frame=none,grid=none,stripes=none\]\n|===/g" $2
-sed -i -e "s/$twoColsRow/|/g" $2
-sed -i -e "s/$twoColsEnd/\|===/g" $2
+sed -i -e "s/\([ \t]*\)$twoColsStart/\1\[cols=2*a,%autowidth.stretch,frame=none,grid=none,stripes=none\]\n|===/g" $2
+sed -i -e "s/\([ \t]*\)$twoColsRow/\1|/g" $2
+sed -i -e "s/\([ \t]*\)$twoColsEnd/\1|===/g" $2
 sed -i -e '/^____/d' $2
+sed -i ':a;N;$!ba;s/--\n|/|/g' $2
+sed -i ':a;N;$!ba;s/--\n\n|==/|==/g' $2
 
 # clear diagram blocs
 sed -i -e "s/\[source,graphviz/\[graphviz/g" $2
@@ -86,6 +90,7 @@ sed -i -e "s/\[source,vegalite/\[vegalite/g" $2
 sed -i -e "s/\[source,vega/\[vega/g" $2
 
 # force break before subtitles
+# echo $(readVarInYml $default_tmp_builddir/full.yml heading.h2.breakbefore)
 # if [ ! -z heading_h2_breakbefore ] && [ '$heading_h2_breakbefore'  = true ]; then sed -i -e 's/^== /<<<\n== /g' $2 ; fi
 # if [ ! -z heading_h3_breakbefore ] && [ '$heading_h3_breakbefore'  = true ]; then sed -i -e 's/^=== /<<<\n=== /g' $2 ; fi
 # if [ ! -z heading_h4_breakbefore ] && [ '$heading_h4_breakbefore'  = true ]; then sed -i -e 's/^==== /<<<\n==== /g' $2 ; fi
