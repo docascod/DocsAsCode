@@ -27,7 +27,7 @@ case "$1" in
         sed -i -e "s/<!-- 2cols -->/$twoColsStart/g" $filenametmp
         sed -i -e "s/<!-- newcol -->/$twoColsRow/g" $filenametmp
         sed -i -e "s/<!-- end_2cols -->/$twoColsEnd/g" $filenametmp        
-        pandoc -s -f markdown -t asciidoc --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
+        pandoc -s -f markdown-smart -t asciidoc --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
         # go back into working dir
         cd $workingdir
         # fix attributes bad convertion
