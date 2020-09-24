@@ -51,7 +51,7 @@ case "$1" in
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
 
         sed -i "/container:: only/{
-          :a;N;/container:: endonly/!ba;/$3/p;s/.. container:: only\n\n   $3\n\(.*\)\n.*/\1/}" $2.tmp
+          :a;N;/container:: endonly/!ba;/$3/p;s/.. container:: only\n\n   $3\n\(.*\)\n.*/\1/g}" $2.tmp
         sed -i "/container:: only/{
           :a;N;/container:: endonly/!ba;//d}" $2.tmp
 
