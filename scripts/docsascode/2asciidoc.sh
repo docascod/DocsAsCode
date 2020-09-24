@@ -3,7 +3,7 @@
 
 # source yq_functions.sh
 
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 3 ]; then
     echo "Illegal number of parameters"
     exit -1
 fi
@@ -49,6 +49,11 @@ case "$1" in
         sed -i -e "s/^\([ \t]*\).. container:: end_2cols/\1$twoColsEnd/g" $2.tmp        
 
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
+
+        sed -i "/container:: only/{
+          :a;N;/container:: endonly/!ba;/$3/p;s/.. container:: only\n\n   $3\n\(.*\)\n.*/\1/g}" $2.tmp
+        sed -i "/container:: only/{
+          :a;N;/container:: endonly/!ba;//d}" $2.tmp
 
         pandoc -s -f rst -t asciidoc $2.tmp -o $2
         rm -f $2.tmp 

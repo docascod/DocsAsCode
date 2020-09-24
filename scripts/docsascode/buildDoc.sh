@@ -17,6 +17,7 @@ function cleanVar {
 function build_doc {
 
   local input_file=$1
+  local conditions=$2
 
   local pathname=$(cd "$(dirname "$input_file")"; pwd)/
   local filenameWithExtension=$(basename -- "$input_file")
@@ -93,7 +94,7 @@ function build_doc {
       source $current_output_template_path/build.dac
 
        # launch process
-      process $input_file $pathname $destination_folder $filenameNoExtension
+      process $input_file $pathname $destination_folder $filenameNoExtension $version
       postprocess $input_file $pathname $destination_folder $filenameNoExtension
 
        # clear temp folder
