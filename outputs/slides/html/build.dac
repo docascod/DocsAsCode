@@ -6,6 +6,7 @@ function process {
     local source_folder=$2
     local destination_folder=$3
     local filename=$4
+    local version=$5
 
     custom_destination_folder=$destination_folder/slidesHTML/
     local options_higlighter='-a source-highlighter=highlightjs'
@@ -13,7 +14,7 @@ function process {
     local options_style='-a customcss=/tmp/buildir/custom.css -a imagesoutdir='$custom_destination_folder/'/'
     local options_output='-o '$custom_destination_folder/$filename'.html'
 
-    2asciidoc.sh $input_file $source_folder/.$filename.adoc
+    2asciidoc.sh $input_file $source_folder/.$filename.adoc $version
     
     # replace line break with revealjs specific lb
     sed -i -e "s/<<</== !/g" $source_folder/.$filename.adoc

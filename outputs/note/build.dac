@@ -6,6 +6,7 @@ function process {
     local source_folder=$2
     local destination_folder=$3
     local filename=$4
+    local version=$5
 
     local cmd_args=()
     cmd_args+=(-a doctype=article)
@@ -39,7 +40,7 @@ function process {
 
     cmd_args+=(-o $destination_folder/$output_file_prefix$filename.pdf)
     
-    2asciidoc.sh $input_file $source_folder/.$filename.adoc
+    2asciidoc.sh $input_file $source_folder/.$filename.adoc $version
 
     asciidoctor-pdf "${cmd_args[@]}" "$source_folder/.$filename.adoc"
 
