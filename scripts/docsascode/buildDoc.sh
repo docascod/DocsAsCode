@@ -2,17 +2,19 @@
 # set -xe
 
 # load utilities
-source parse_yaml.sh
+# source parse_yaml.sh
 
-function cleanVar {
-    local varValue=$1
-    if [ -z varValue ] || [ "$varValue" = '~' ]
-    then
-        echo ""
-    else
-        echo $varValue
-    fi
-}
+source yq_functions.sh
+
+# function cleanVar {
+#     local varValue=$1
+#     if [ -z varValue ] || [ "$varValue" = '~' ]
+#     then
+#         echo ""
+#     else
+#         echo $varValue
+#     fi
+# }
 
 function build_doc {
 
@@ -61,7 +63,7 @@ function build_doc {
   local current_output_template_path=/tmp/buildir/
 
   # load utilities
-  source parse_yaml.sh
+  # source parse_yaml.sh
 
   # for each output
   for output in "${outputs_arr[@]}"; do
@@ -86,10 +88,15 @@ function build_doc {
        echo " - process output: "$output
 
       # prepare to launch commands to produce output
+      rm -f $ymlFile && touch $ymlFile
+      yq m -i -x $ymlFile $current_output_template_path/config.yml 
+      yq m -i -x $ymlFile $current_output_template_path/dac-theme.yml
+      yq m -i -x $ymlFile $current_output_template_path/dac_custom-theme.yml
+
       ## Ramdom bug with parse_yaml, sometimes it genrates double separator => fix with _# and sed
-      eval $(parse_yaml $current_output_template_path/config.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
-      eval $(parse_yaml $current_output_template_path/dac-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
-      eval $(parse_yaml $current_output_template_path/dac_custom-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
+      # eval $(parse_yaml $current_output_template_path/config.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
+      # eval $(parse_yaml $current_output_template_path/dac-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
+      # eval $(parse_yaml $current_output_template_path/dac_custom-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
       source $current_output_template_path/build.dac
 
        # launch process

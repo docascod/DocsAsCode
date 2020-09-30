@@ -1,7 +1,7 @@
 #! /bin/bash
 # set -xe
 
-# source yq_functions.sh
+source yq_functions.sh
 
 if [ "$#" -ne 2 ]; then
     echo "Illegal number of parameters"
@@ -26,8 +26,9 @@ case "$1" in
         sed -i "s/==\([^=].*[^=]\)==/[.yellow-background]#\1#/g" $filenametmp
         sed -i -e "s/<!-- 2cols -->/$twoColsStart/g" $filenametmp
         sed -i -e "s/<!-- newcol -->/$twoColsRow/g" $filenametmp
-        sed -i -e "s/<!-- end_2cols -->/$twoColsEnd/g" $filenametmp        
-        pandoc -s -f markdown-smart -t asciidoc --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
+        sed -i -e "s/<!-- end_2cols -->/$twoColsEnd/g" $filenametmp
+        
+        pandoc -s -f markdown-smart -t asciidoctor --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
         # go back into working dir
         cd $workingdir
         # fix attributes bad convertion
@@ -50,7 +51,7 @@ case "$1" in
 
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
 
-        pandoc -s -f rst -t asciidoc $2.tmp -o $2
+        pandoc -s -f rst -t asciidoctor $2.tmp -o $2
         rm -f $2.tmp 
         # go back into working dir
         cd $workingdir
@@ -76,12 +77,12 @@ esac
 rm -f $tmpfile
 
 # add fullwidth on tables and autowidth on columns
-# if [ ! -z table_fullwidth ] && [ '$table_fullwidth'  = true ]; then sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2 ; fi
+# if [ "$(readVarInYml table.fullwidth false)" = true ]; then sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2 ; fi
 
 # fix image bloc vs inline
 sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
 
-# manage multi columns
+# multi columns
 sed -i -e "s/\([ \t]*\)$twoColsStart/\1\[cols=2*a,%autowidth.stretch,frame=none,grid=none,stripes=none\]\n|===/g" $2
 sed -i -e "s/\([ \t]*\)$twoColsRow/\1|/g" $2
 sed -i -e "s/\([ \t]*\)$twoColsEnd/\1|===/g" $2
@@ -98,11 +99,10 @@ sed -i -e "s/\[source,vegalite/\[vegalite/g" $2
 sed -i -e "s/\[source,vega/\[vega/g" $2
 
 # force break before subtitles
-# echo $(readVarInYml $default_tmp_builddir/full.yml heading.h2.breakbefore)
-# if [ ! -z heading_h2_breakbefore ] && [ '$heading_h2_breakbefore'  = true ]; then sed -i -e 's/^== /<<<\n== /g' $2 ; fi
-# if [ ! -z heading_h3_breakbefore ] && [ '$heading_h3_breakbefore'  = true ]; then sed -i -e 's/^=== /<<<\n=== /g' $2 ; fi
-# if [ ! -z heading_h4_breakbefore ] && [ '$heading_h4_breakbefore'  = true ]; then sed -i -e 's/^==== /<<<\n==== /g' $2 ; fi
-# if [ ! -z heading_h5_breakbefore ] && [ '$heading_h5_breakbefore'  = true ]; then sed -i -e 's/^===== /<<<\n===== /g' $2 ; fi
-# if [ ! -z heading_h6_breakbefore ] && [ '$heading_h6_breakbefore'  = true ]; then sed -i -e 's/^====== /<<<\n====== /g' $2 ; fi
+# if [ "$(readVarInYml heading.h2.breakbefore false)" = true ]; then sed -i -e 's/^== /<<<\n== /g' $2 ; fi
+# if [ "$(readVarInYml heading.h3.breakbefore false)" = true ]; then sed -i -e 's/^=== /<<<\n=== /g' $2 ; fi
+# if [ "$(readVarInYml heading.h4.breakbefore false)" = true ]; then sed -i -e 's/^==== /<<<\n==== /g' $2 ; fi
+# if [ "$(readVarInYml heading.h5.breakbefore false)" = true ]; then sed -i -e 's/^===== /<<<\n===== /g' $2 ; fi
+# if [ "$(readVarInYml heading.h6.breakbefore false)" = true ]; then sed -i -e 's/^====== /<<<\n====== /g' $2 ; fi
 
 exit 0
