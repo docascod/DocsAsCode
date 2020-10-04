@@ -25,6 +25,19 @@ function readVarInYml {
   fi
 }
 
+function mergeYml {
+  local file1=$1
+  local file2=$2
+  # if first file not exists -> create it
+  if [ ! -f $file1 ]; then
+   touch $file1
+  fi
+  # do merge only if second file exists
+  if [ -f $file2 ]; then
+    yq m -i -x $file1 $file2
+  fi
+}
+
 function testreadVarInYml {
   local tmpYmlFile=$ymlFile
   ymlFile=/tmp/test.yaml

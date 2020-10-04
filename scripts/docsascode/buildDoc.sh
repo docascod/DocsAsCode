@@ -2,19 +2,7 @@
 # set -xe
 
 # load utilities
-# source parse_yaml.sh
-
 source yq_functions.sh
-
-# function cleanVar {
-#     local varValue=$1
-#     if [ -z varValue ] || [ "$varValue" = '~' ]
-#     then
-#         echo ""
-#     else
-#         echo $varValue
-#     fi
-# }
 
 function build_doc {
 
@@ -62,41 +50,49 @@ function build_doc {
   # set merged destination output folder
   local current_output_template_path=/tmp/buildir/
 
-  # load utilities
-  # source parse_yaml.sh
-
   # for each output
   for output in "${outputs_arr[@]}"; do
-       # create temporary folder for custom output
-       mkdir -p $current_output_template_path 2>/dev/null
+      # create temporary folder for custom output
+      mkdir -p $current_output_template_path 2>/dev/null
 
-       # split each output on . char
-       IFS='.' read -r -a pathArray <<< "$output"
+      # split each output on . char
+      IFS='.' read -r -a pathArray <<< "$output"
 
-       local output_path=/_
-       # foreach part of the output
-       for i in "${pathArray[@]}"; do
-               # add this part to the source path
-               output_path+=$i/
+      local output_path=/_
+      
+      # foreach part of the output
+      for i in "${pathArray[@]}"; do
+          # add this part to the source path
+          output_path+=$i/
+          
+          # move yaml config files in temp folder to prevent current config crush
+          mkdir $current_output_template_path/yaml_tmp
+          mv $output_path/config.yml $current_output_template_path/yaml_tmp/ 2>/dev/null
+          mv $output_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/ 2>/dev/null          
+          
+          # force files (only) copy on destination path
+          cp -f $output_path/* $current_output_template_path 2>/dev/null
+          
+          # merge new config on previous
+          mergeYml $current_output_template_path/config.yml $current_output_template_path/yaml_tmp/config.yml
+          mergeYml $current_output_template_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/dac_custom-theme.yml
+          
+          # remove temp yaml folder
+          rm -rf $current_output_template_path/yaml_tmp/
 
-               # force files (only) copy on destination path
-               cp -f $output_path/* $current_output_template_path 2>/dev/null
-       done
+      done
 
-       cp -rf $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
+      # cp basic asciidoctor themes for dac theme extend
+      cp -rf $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
 
-       echo " - process output: "$output
+      echo " - process output: "$output
 
       # prepare to launch commands to produce output
-      rm -f $ymlFile && touch $ymlFile
-      yq m -i -x $ymlFile $current_output_template_path/config.yml 
-      yq m -i -x $ymlFile $current_output_template_path/dac-theme.yml
-      yq m -i -x $ymlFile $current_output_template_path/dac_custom-theme.yml
+      rm -f $ymlFile 
+      mergeYml $ymlFile $current_output_template_path/config.yml
+      mergeYml $ymlFile $current_output_template_path/dac-theme.yml
+      mergeYml $ymlFile $current_output_template_path/dac_custom-theme.yml
 
-      ## Ramdom bug with parse_yaml, sometimes it genrates double separator => fix with _# and sed
-      # eval $(parse_yaml $current_output_template_path/config.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
-      # eval $(parse_yaml $current_output_template_path/dac-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
-      # eval $(parse_yaml $current_output_template_path/dac_custom-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
       source $current_output_template_path/build.dac
 
        # launch process

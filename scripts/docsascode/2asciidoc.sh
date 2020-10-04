@@ -82,6 +82,10 @@ rm -f $tmpfile
 # fix image bloc vs inline
 sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
 
+# fix checkbox list
+sed -i "s/* ☒ /* [x] /g" $2
+sed -i "s/* ☐ /* [ ] /g" $2
+
 # multi columns
 sed -i -e "s/\([ \t]*\)$twoColsStart/\1\[cols=2*a,%autowidth.stretch,frame=none,grid=none,stripes=none\]\n|===/g" $2
 sed -i -e "s/\([ \t]*\)$twoColsRow/\1|/g" $2
