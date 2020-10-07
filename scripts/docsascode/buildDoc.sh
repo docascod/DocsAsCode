@@ -76,9 +76,15 @@ function build_doc {
           # merge new config on previous
           mergeYml $current_output_template_path/config.yml $current_output_template_path/yaml_tmp/config.yml
           mergeYml $current_output_template_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/dac_custom-theme.yml
-          
+
           # remove temp yaml folder
           rm -rf $current_output_template_path/yaml_tmp/
+
+          # Check if any fonts dir exists in the template and add any ttf file from it
+          if [ -d $output_path/fonts/ ]
+          then
+              cp -f $output_path/fonts/*.ttf  $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/
+          fi
 
       done
 
