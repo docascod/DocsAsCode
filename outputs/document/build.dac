@@ -17,7 +17,7 @@ function process {
     cmd_args+=(-a imagesoutdir=/tmp/)
     cmd_args+=(-a pdf-theme=dac_custom)
     cmd_args+=(-a pdf-themesdir=/tmp/buildir/)
-    local chapterprefix=$(readVarInYml heading.chapter_prefix Chapter)
+    local chapterprefix=$(readVarInYml heading.chapter_prefix)
     cmd_args+=(-a chapter-label="$chapterprefix")
     cmd_args+=(-a table-stripes=$(readVarInYml table.stripes even))
     local tableprefix=$(readVarInYml table.caption_prefix Table)
