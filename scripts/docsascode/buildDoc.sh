@@ -53,7 +53,7 @@ function build_doc {
   # for each output
   for output in "${outputs_arr[@]}"; do
       # create temporary folder for custom output
-      mkdir -p $current_output_template_path 2>/dev/null
+      mkdir -p $current_output_template_path 2>/dev/null      
 
       # split each output on . char
       IFS='.' read -r -a pathArray <<< "$output"
@@ -76,7 +76,7 @@ function build_doc {
           # merge new config on previous
           mergeYml $current_output_template_path/config.yml $current_output_template_path/yaml_tmp/config.yml
           mergeYml $current_output_template_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/dac_custom-theme.yml
-          
+
           # remove temp yaml folder
           rm -rf $current_output_template_path/yaml_tmp/
 
