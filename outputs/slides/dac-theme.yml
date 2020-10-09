@@ -35,7 +35,7 @@ page:
 base:
   font-family: OpenSans
   font-size: 20
-  font-color: #5e5e5e
+  font-color: '5e5e5e'
   align: justify
   line-height-length: 30
   line-height: $base-line-height-length / $base-font-size
@@ -43,17 +43,17 @@ conum:
   font-family: M+_1mn
   font-size: $base-font-size
 code:
-  background-color: #f0f4f9
+  background-color: 'f0f4f9'
   border-offset: 2
   border-radius: 3
   border-width: 0.5
-  border-color: #bad4ed
+  border-color: 'bad4ed'
   font-family: SourceCode
   font-size: $base-font-size - 5
 link:
-  font-color: #3968b5
+  font-color: '3968b5'
 literal:
-  background-color: #e6eef6
+  background-color: 'e6eef6'
   border-offset: $code-border-offset
   border-radius: $code-border-radius
   border-width: $code-border-width
@@ -68,7 +68,7 @@ title-page:
   title:
     font-size: 66
     font-style: normal
-    font-color: #287be3
+    font-color: '287be3'
     align: center
   subtitle:
     display: 
@@ -98,15 +98,15 @@ heading:
     margin-top: $vertical-spacing * 1.2
   h4:
     font-size: $base-font-size + 5
-    font-color: #000000
+    font-color: '000000'
     margin-top: $vertical-spacing * 1.0
   h5:
     font-size: $base-font-size + 2
-    font-color: #000000
+    font-color: '000000'
     margin-top: $vertical-spacing * 0.75
   h6:
     font-size: $base-font-size
-    font-color: #000000
+    font-color: '000000'
     margin-top: $vertical-spacing * 0.5
 thematic-break:
   border-color: $title-page-title-font-color
@@ -115,8 +115,8 @@ thematic-break:
 header:
   height: 60
   line-height: 1
-  background-color: #f0f4f9
-  font-color: #5e5e5e
+  background-color: 'f0f4f9'
+  font-color: '5e5e5e'
   font-size: 18
   font-style: bold
   vertical-align: middle
@@ -149,11 +149,11 @@ image:
     align: center
 table:
   body:
-    stripe-background-color: #f0f4f9
-  border-color: #dfe2e5
+    stripe-background-color: 'f0f4f9'
+  border-color: 'dfe2e5'
   grid-color: $table-border-color
   head:
-    background-color: #bad4ed
+    background-color: 'bad4ed'
     border-bottom-width: 1
   cell:
     padding: [2,5,2,5]
@@ -163,10 +163,10 @@ ulist:
 key:
   border-width: 0.5
   border-radius: 1
-  border-color: #e7e7e7
-  background-color: #f5f5f5
+  border-color: 'e7e7e7'
+  background-color: 'f5f5f5'
   border-offset: 4
-  font-color: #333333
+  font-color: '333333'
   font-style: italic
 toc:
   display: false
@@ -174,4 +174,4 @@ output:
   prefix: slides_
 role:
   yellow-background:
-    background-color: #FFFF00
+    background-color: 'FFFF00'

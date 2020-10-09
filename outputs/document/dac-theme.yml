@@ -28,7 +28,7 @@ page:
   margin: [0.75in, 1in, 0.75in, 1in]
   size: A4
 base:
-  font-color: #5e5e5e
+  font-color: '5e5e5e'
   font-family: OpenSans
   font-size: 12
   line-height-length: 17
@@ -38,15 +38,15 @@ conum:
   font-family: M+_1mn
   font-size: $base-font-size
 code:
-  background-color: #f0f4f9
+  background-color: 'f0f4f9'
   border-offset: 2
   border-radius: 3
   border-width: 0.5
-  border-color: #bad4ed
+  border-color: 'bad4ed'
   font-family: SourceCode
   font-size: $base-font-size
 heading:
-  font-color: #262626
+  font-color: '262626'
   font-size: 17
   font-style: bold
   line-height: 1.2
@@ -54,9 +54,9 @@ heading:
   chapter_prefix: ~
   numbered: true
 link:
-  font-color: #3968b5
+  font-color: '3968b5'
 literal:
-  background-color: #e6eef6
+  background-color: 'e6eef6'
   border-offset: $code-border-offset
   border-radius: $code-border-radius
   border-width: $code-border-width
@@ -87,11 +87,11 @@ image:
     align: center
 table:
   body:
-    stripe-background-color: #f0f4f9
-  border-color: #dfe2e5
+    stripe-background-color: 'f0f4f9'
+  border-color: 'dfe2e5'
   grid-color: $table-border-color
   head:
-    background-color: #bad4ed
+    background-color: 'bad4ed'
     border-bottom-width: 1
   cell:
     padding: [2,5,2,5]
@@ -101,10 +101,10 @@ ulist:
 key:
   border-width: 0.5
   border-radius: 1
-  border-color: #e7e7e7
-  background-color: #f5f5f5
+  border-color: 'e7e7e7'
+  background-color: 'f5f5f5'
   border-offset: 4
-  font-color: #333333
+  font-color: '333333'
   font-style: italic    
 toc:
   display: true
@@ -113,5 +113,5 @@ output:
   prefix: ~
 role:
   yellow-background:
-    background-color: #FFFF00
+    background-color: 'FFFF00'
     
