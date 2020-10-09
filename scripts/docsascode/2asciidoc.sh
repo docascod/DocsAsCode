@@ -24,10 +24,9 @@ case "$1" in
         cd $currenttmpdir
         sed -i "s/<kbd>\(.*\)<\/kbd>/kbd:\[\1\]/g" $filenametmp
         sed -i "s/==\([^=].*[^=]\)==/[.yellow-background]#\1#/g" $filenametmp
-        sed -i -e "s/<!-- 2cols -->/$twoColsStart/g" $filenametmp
-        sed -i -e "s/<!-- newcol -->/$twoColsRow/g" $filenametmp
-        sed -i -e "s/<!-- end_2cols -->/$twoColsEnd/g" $filenametmp
         
+        sed -i -e "s/<!-- table_hide -->/\/\/ hidetable/g" $filenametmp
+
         pandoc -s -f markdown-smart -t asciidoctor --lua-filter=/usr/local/bin/templates/replaceMeta.lua $filenametmp -o $2
         # go back into working dir
         cd $workingdir
@@ -87,6 +86,10 @@ sed -i "s/* ☒ /* [x] /g" $2
 sed -i "s/* ☐ /* [ ] /g" $2
 
 # multi columns
+sed -i ':a;N;$!ba;s/\/\/ hidetable\n\n\[cols/hidetable\[%autowidth.stretch,frame=none,grid=none,stripes=none,cols/g' $2
+sed -i -e 's/hidetable\[\(.*\),options="header",\]/\[\1\]/g' $2
+sed -i -e 's/hidetable\(.*\)/\1/g' $2
+
 sed -i -e "s/\([ \t]*\)$twoColsStart/\1\[cols=2*a,%autowidth.stretch,frame=none,grid=none,stripes=none\]\n|===/g" $2
 sed -i -e "s/\([ \t]*\)$twoColsRow/\1|/g" $2
 sed -i -e "s/\([ \t]*\)$twoColsEnd/\1|===/g" $2
