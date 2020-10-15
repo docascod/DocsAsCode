@@ -1,5 +1,6 @@
 #! /bin/bash
 # set -xe
+source meta_tools.sh
 
 function process {
     local input_file=$1
@@ -33,6 +34,12 @@ function process {
         cmd_args+=(-a toc-title="$toctile")
     fi
     cmd_args+=(-a experimental=true)
+
+    ## add extra vars from attributes
+    extraKeys=( $(getExtraMetaKeys) )
+    for key in "${extraKeys[@]}"; do
+      cmd_args+=(-a $key=$(readInMeta $key))
+    done
 
     output_file_prefix=""
     if [ ! -z output_prefix ]; then output_file_prefix=$(readVarInYml output.prefix) ; fi

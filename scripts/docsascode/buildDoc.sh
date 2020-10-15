@@ -3,6 +3,7 @@
 
 # load utilities
 source yq_functions.sh
+source meta_tools.sh
 
 function build_doc {
 
@@ -18,22 +19,19 @@ function build_doc {
   echo "process file: "$filenameWithExtension
 
   # prepare outputs
-  2meta.sh $input_file /tmp/meta.txt
-  source /tmp/meta.txt
+  initMeta $input_file
+  local meta_outputs=( $(readInMeta keywords $DEFAULT_OUTPUT) )
 
   # clean array
   declare -a outputs_arr
-  for output in "${outputs[@]}"; do
+  for output in "${meta_outputs[@]}"; do
     if [[ $output == output* ]]; then
       # clean output entries
       output=${output//[-,'']/}
       outputs_arr+=( "$output" )
     fi
   done
-  if [ ${#outputs_arr[@]} -eq 0 ]; then
-    outputs_arr=("$DEFAULT_OUTPUT")
-  fi
-
+  
   # create a copy of output (for merging with custom)
   cp -rf /output/ /_output/
 

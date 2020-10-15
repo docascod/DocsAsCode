@@ -26,7 +26,8 @@ case "$1" in
         sed -i "s/==\([^=].*[^=]\)==/[.yellow-background]#\1#/g" $filenametmp
         sed -i -e "s/<!-- table_hide -->/\/\/ hidetable/g" $filenametmp
 
-        pandoc -s -f markdown-smart -t asciidoctor --lua-filter=/usr/local/bin/templates/replaceMeta.lua --shift-heading-level-by=-1  $filenametmp -o $2
+        pandoc -s -f markdown-smart -t asciidoctor --shift-heading-level-by=-1  $filenametmp -o $2
+
         # go back into working dir
         cd $workingdir
         # fix attributes bad convertion

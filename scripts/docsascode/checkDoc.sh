@@ -1,6 +1,8 @@
 #! /bin/bash
 # set -xe
 
+source meta_tools.sh
+
 scriptdir=/usr/local/bin/
 default_lang="fr-FR"
 
@@ -50,11 +52,8 @@ function check_doc {
         esac
 
         # detect language
-        sh $scriptdir/2meta.sh $1 $input_file_meta
-        source $input_file_meta
-        if [ -z ${lang+x} ]; then 
-          lang=$default_lang
-        fi
+        initMeta $1
+        lang=$(readInMeta lang $default_lang)
 
         # check spell & grammar
         current_exe_folder="/tmp/_check/"
