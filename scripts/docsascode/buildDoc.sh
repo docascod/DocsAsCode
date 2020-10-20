@@ -2,17 +2,8 @@
 # set -xe
 
 # load utilities
-source parse_yaml.sh
-
-function cleanVar {
-    local varValue=$1
-    if [ -z varValue ] || [ "$varValue" = '~' ]
-    then
-        echo ""
-    else
-        echo $varValue
-    fi
-}
+source yq_functions.sh
+source meta_tools.sh
 
 function build_doc {
 
@@ -25,25 +16,24 @@ function build_doc {
 
   [[ ! -z "$DEFAULT_DESTINATION" ]] && destination_folder=$DEFAULT_DESTINATION
 
-  echo "process file: "$filenameWithExtension
+  printf "process file: "$filenameWithExtension"\n"
 
   # prepare outputs
-  2meta.sh $input_file /tmp/meta.txt
-  source /tmp/meta.txt
+  initMeta $input_file
 
+  local meta_outputs=$(readInMeta keywords $DEFAULT_OUTPUT)
+  meta_outputs=(${meta_outputs//,/ })
+  
   # clean array
   declare -a outputs_arr
-  for output in "${outputs[@]}"; do
+  for output in "${meta_outputs[@]}"; do
     if [[ $output == output* ]]; then
       # clean output entries
       output=${output//[-,'']/}
       outputs_arr+=( "$output" )
     fi
   done
-  if [ ${#outputs_arr[@]} -eq 0 ]; then
-    outputs_arr=("$DEFAULT_OUTPUT")
-  fi
-
+  
   # create a copy of output (for merging with custom)
   cp -rf /output/ /_output/
 
@@ -60,41 +50,68 @@ function build_doc {
   # set merged destination output folder
   local current_output_template_path=/tmp/buildir/
 
-  # load utilities
-  source parse_yaml.sh
-
   # for each output
   for output in "${outputs_arr[@]}"; do
-       # create temporary folder for custom output
-       mkdir -p $current_output_template_path 2>/dev/null
+      # create temporary folder for custom output
+      mkdir -p $current_output_template_path 2>/dev/null      
 
-       # split each output on . char
-       IFS='.' read -r -a pathArray <<< "$output"
+      # split each output on . char
+      IFS='.' read -r -a pathArray <<< "$output"
 
-       local output_path=/_
-       # foreach part of the output
-       for i in "${pathArray[@]}"; do
-               # add this part to the source path
-               output_path+=$i/
+      local output_path=/_
+      
+      # foreach part of the output
+      for i in "${pathArray[@]}"; do
+          # add this part to the source path
+          output_path+=$i/
+          
+          # move yaml config files in temp folder to prevent current config crush
+          mkdir $current_output_template_path/yaml_tmp
+          mv $output_path/config.yml $current_output_template_path/yaml_tmp/ 2>/dev/null
+          mv $output_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/ 2>/dev/null          
+          
+          # force files (only) copy on destination path
+          cp -f $output_path/* $current_output_template_path 2>/dev/null
+          
+          # merge new config on previous
+          mergeYml $current_output_template_path/config.yml $current_output_template_path/yaml_tmp/config.yml
+          mergeYml $current_output_template_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/dac_custom-theme.yml
 
-               # force files (only) copy on destination path
-               cp -f $output_path/* $current_output_template_path 2>/dev/null
-       done
+          # remove temp yaml folder
+          rm -rf $current_output_template_path/yaml_tmp/
 
-       cp -rf $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
+          # Check if any fonts dir exists in the template and add any ttf file from it
+          for font in $(ls $output_path/*.ttf 2>/dev/null)
+          do
+            if [ ! -f $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/$i ]
+            then
+                cp -f $font $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/
+            fi
+          done
+      done
 
-       echo " - process output: "$output
+      # cp basic asciidoctor themes for dac theme extend
+      cp -rf $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
+
+      printf " - process output: "$output"\n"
 
       # prepare to launch commands to produce output
-      ## Ramdom bug with parse_yaml, sometimes it genrates double separator => fix with _# and sed
-      eval $(parse_yaml $current_output_template_path/config.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
-      eval $(parse_yaml $current_output_template_path/dac-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
-      eval $(parse_yaml $current_output_template_path/dac_custom-theme.yml "" "_#" | sed "s/_#_#/_/g" | sed "s/_#/_/g")
+      rm -f $ymlFile 
+      mergeYml $ymlFile $current_output_template_path/config.yml
+      mergeYml $ymlFile $current_output_template_path/dac-theme.yml
+      mergeYml $ymlFile $current_output_template_path/dac_custom-theme.yml
+
       source $current_output_template_path/build.dac
 
        # launch process
-      process $input_file $pathname $destination_folder $filenameNoExtension
-      postprocess $input_file $pathname $destination_folder $filenameNoExtension
+      resultFile=$(process $input_file $pathname $destination_folder $filenameNoExtension)
+
+      if [ -f $destination_folder/$resultFile ]; then
+        printf "  → file generated: "$resultFile"\n"
+        generatedFiles+=( "$destination_folder$resultFile" )
+      else
+        printf "  → NO file generated\n"
+      fi
 
        # clear temp folder
        rm -rf $current_output_template_path
@@ -102,7 +119,6 @@ function build_doc {
 
   # remove ouput copy
   rm -rf /_output/
-
 }
 
 [[ -z "$DEFAULT_OUTPUT" ]] && DEFAULT_OUTPUT=output.document
@@ -120,7 +136,7 @@ do
             shift
             ;;
     *)
-            echo "extension not supported. only rst,md, adoc."
+            printf "extension not supported. only rst,md, adoc.\n"
             exit -1
             ;;
     esac

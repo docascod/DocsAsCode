@@ -49,7 +49,7 @@ RUN apk --no-cache --virtual .canvas-build-deps add \
 
 FROM alpine as pandoc_builder
 
-ARG pandoc_version=2.10
+ARG pandoc_version=2.10.1
 ENV PANDOC_VERSION=${pandoc_version}
 
 RUN mkdir /pandoc && wget -q https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz -P /tmp/ \
@@ -153,7 +153,7 @@ RUN wget $(curl -s https://api.github.com/repos/mikefarah/yq/releases/latest | g
 
 # ----- DocsAsCode -----
 
-ADD scripts/docsascode/*.tex /usr/local/bin/templates/
+# ADD scripts/docsascode/*.tex /usr/local/bin/templates/
 ADD scripts/docsascode/*.lua /usr/local/bin/templates/
 ADD scripts/docsascode/*.sh /usr/local/bin/
 

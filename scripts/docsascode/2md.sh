@@ -2,7 +2,7 @@
 # set -xe
 
 if [ "$#" -ne 2 ]; then
-    echo "Illegal number of parameters"
+    printf "Illegal number of parameters\n"
     exit -1
 fi
 
@@ -27,7 +27,7 @@ case "$1" in
         ;;
 
 *)
-        echo "extension not supported. only rst,md, adoc."
+        printf "extension not supported. only rst,md, adoc.\n"
         exit -1
         ;;
 esac

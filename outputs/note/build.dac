@@ -1,5 +1,6 @@
 #! /bin/bash
 # set -xe
+source meta_tools.sh
 
 function process {
     local input_file=$1
@@ -11,31 +12,37 @@ function process {
     cmd_args+=(-a doctype=article)
     cmd_args+=(-a source-highlighter=rouge)
     cmd_args+=(-a icons=font)
-    if [ ! -z code_linenums ] && [ $code_linenums  = true ]; then cmd_args+=(-a source-linenums-option) ; fi
-    cmd_args+=(-a rouge-style=$(cleanVar "$code_theme"))
+    if [ "$(readVarInYml code.linenums false)" = true ]; then cmd_args+=(-a source-linenums-option) ; fi
+    cmd_args+=(-a rouge-style=$(readVarInYml code.theme monokai_sublime))
     cmd_args+=(-r asciidoctor-diagram)
     cmd_args+=(-a imagesoutdir=/tmp/)
     cmd_args+=(-a pdf-theme=dac_custom)
     cmd_args+=(-a pdf-themesdir=/tmp/buildir/)
-    local chapterprefix=$(cleanVar "$heading_chapter_prefix")
+    local chapterprefix=$(readVarInYml heading.chapter_prefix Chapter)
     cmd_args+=(-a chapter-label="$chapterprefix")
-    cmd_args+=(-a table-stripes=$(cleanVar "$table_stripes"))
-    local tableprefix=$(cleanVar "$table_caption_prefix")
+    cmd_args+=(-a table-stripes=$(readVarInYml table.stripes even))
+    local tableprefix=$(readVarInYml table.caption_prefix Table)
     cmd_args+=(-a table-caption="$tableprefix")
-    local captionprefix=$(cleanVar "$image_caption_prefix")
+    local captionprefix=$(readVarInYml image.caption_prefix Figure)
     cmd_args+=(-a figure-caption="$captionprefix")
-    if [ ! -z heading_numbered ] && [ $heading_numbered  = true ]; then cmd_args+=(-a numbered) ; fi
-    if [ ! -z toc_display ] && [ $toc_display  = true ]
+    if [ "$(readVarInYml heading.numbered false)" = true ]; then cmd_args+=(-a numbered) ; fi
+    if [ "$(readVarInYml toc.display false)" = true ]
     then 
-        cmd_args+=(-a toc=$(cleanVar "$toc_align"))
-        cmd_args+=(-a toclevels=$(cleanVar "$toc_levels"))
-        local toctile=$(cleanVar "$toc_title")
+        cmd_args+=(-a toc=$(readVarInYml toc.align right))
+        cmd_args+=(-a toclevels=$(readVarInYml toc.levels 2))
+        local toctile=$(readVarInYml toc.title)
         cmd_args+=(-a toc-title="$toctile")
     fi
     cmd_args+=(-a experimental=true)
 
+    ## add extra vars from attributes
+    extraKeys=( $(getExtraMetaKeys) )
+    for key in "${extraKeys[@]}"; do
+      cmd_args+=(-a $key=$(readInMeta $key))
+    done
+
     output_file_prefix=""
-    if [ ! -z output_prefix ]; then output_file_prefix=$(cleanVar "$output_prefix") ; fi
+    if [ ! -z output_prefix ]; then output_file_prefix=$(readVarInYml output.prefix) ; fi
 
     cmd_args+=(-o $destination_folder/$output_file_prefix$filename.pdf)
     
@@ -43,57 +50,10 @@ function process {
 
     asciidoctor-pdf "${cmd_args[@]}" "$source_folder/.$filename.adoc"
 
-    echo "  → file generated: "$output_file_prefix$filename.pdf
-}
-
-function process_old {
-    local input_file=$1
-    local source_folder=$2
-    local destination_folder=$3
-    local filename=$4
-
-    local options_doctype='-a doctype=article'
-    local options_higlighter='-a source-highlighter=rouge -a icons=font'
-
-    if [ ! -z code_linenums ] && [ $code_linenums  = true ]; then options_higlighter=$options_higlighter' -a source-linenums-option' ; fi
-    options_higlighter=$options_higlighter' -a rouge-style='$(cleanVar "$code_theme")
-    
-    local options_diagram='-r asciidoctor-diagram -a imagesoutdir=/tmp/'
-    local options_style='-a pdf-theme=dac_custom -a pdf-themesdir=/tmp/buildir/'
- 
-    options_style=$options_style' -a chapter-label='$(cleanVar "$heading_chapter_prefix")
-    options_style=$options_style' -a table-stripes='$(cleanVar "$table_stripes")' -a table-caption='$(cleanVar "$table_caption_prefix")
-    options_style=$options_style' -a figure-caption='$(cleanVar "$image_caption_prefix")
-
-    if [ ! -z heading_numbered ] && [ $heading_numbered  = true ]; then options_style=$options_style' -a numbered' ; fi
-
-    if [ ! -z toc_display ] && [ $toc_display  = true ]
-    then 
-        options_style=$options_style' -a toc='$(cleanVar "$toc_align")
-        options_style=$options_style' -a toc-title='$(cleanVar "$toc_title")
-        options_style=$options_style' -a toclevels='$(cleanVar "$toc_levels")
-    fi
-
-    output_file_prefix=""
-    if [ ! -z output_prefix ]; then output_file_prefix=$(cleanVar "$output_prefix") ; fi
-
-    local options_output='-o '$destination_folder/$output_file_prefix$filename.pdf
-
-    2asciidoc.sh $input_file $source_folder/.$filename.adoc
-
-    asciidoctor-pdf $options_doctype $options_style $options_higlighter $options_diagram $source_folder/.$filename.adoc $options_output
-
-    echo "  → file generated: "$output_file_prefix$filename.pdf
-}
-
-function postprocess {
-    local input_file=$1
-    local source_folder=$2
-    local destination_folder=$3
-    local filename=$4
-
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
     
     chown $PID:$GID $destination_folder/$output_file_prefix$filename.pdf
+
+    echo $output_file_prefix$filename.pdf
 }

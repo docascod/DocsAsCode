@@ -1,6 +1,8 @@
 #! /bin/bash
 # set -xe
 
+source meta_tools.sh
+
 scriptdir=/usr/local/bin/
 default_lang="fr-FR"
 
@@ -50,11 +52,8 @@ function check_doc {
         esac
 
         # detect language
-        sh $scriptdir/2meta.sh $1 $input_file_meta
-        source $input_file_meta
-        if [ -z ${lang+x} ]; then 
-          lang=$default_lang
-        fi
+        initMeta $1
+        lang=$(readInMeta lang $default_lang)
 
         # check spell & grammar
         current_exe_folder="/tmp/_check/"
@@ -74,7 +73,7 @@ function check_doc {
 
         source $current_exe_folder/check.dac
 
-        echo -e "\nprocess file: "$1
+        printf "\nprocess file: "$1"\n"
 
         #merge all .dict file into a single with pws header and remove blank lines
         cat $current_exe_folder/*.dict >> $current_exe_folder/.GLOBAL.dict 2>/dev/null
@@ -106,7 +105,7 @@ do
             shift
             ;;
     *)
-            echo "extension not supported. only rst,md, adoc."
+            printf "extension not supported. only rst,md, adoc.\n"
             exit -1
             ;;
     esac

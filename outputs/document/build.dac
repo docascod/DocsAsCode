@@ -1,5 +1,6 @@
 #! /bin/bash
 # set -xe
+source meta_tools.sh
 
 function process {
     local input_file=$1
@@ -11,32 +12,37 @@ function process {
     cmd_args+=(-a doctype=book)
     cmd_args+=(-a source-highlighter=rouge)
     cmd_args+=(-a icons=font)
-    if [ ! -z code_linenums ] && [ $code_linenums  = true ]; then cmd_args+=(-a source-linenums-option) ; fi
-    cmd_args+=(-a rouge-style=$(cleanVar "$code_theme"))
+    if [ "$(readVarInYml code.linenums false)" = true ]; then cmd_args+=(-a source-linenums-option) ; fi
+    cmd_args+=(-a rouge-style=$(readVarInYml code.theme monokai_sublime))
     cmd_args+=(-r asciidoctor-diagram)
     cmd_args+=(-a imagesoutdir=/tmp/)
     cmd_args+=(-a pdf-theme=dac_custom)
     cmd_args+=(-a pdf-themesdir=/tmp/buildir/)
-    local chapterprefix=$(cleanVar "$heading_chapter_prefix")
+    local chapterprefix=$(readVarInYml heading.chapter_prefix)
     cmd_args+=(-a chapter-label="$chapterprefix")
-    cmd_args+=(-a table-stripes=$(cleanVar "$table_stripes"))
-    local tableprefix=$(cleanVar "$table_caption_prefix")
+    cmd_args+=(-a table-stripes=$(readVarInYml table.stripes even))
+    local tableprefix=$(readVarInYml table.caption_prefix Table)
     cmd_args+=(-a table-caption="$tableprefix")
-    local captionprefix=$(cleanVar "$image_caption_prefix")
+    local captionprefix=$(readVarInYml image.caption_prefix Figure)
     cmd_args+=(-a figure-caption="$captionprefix")
-    if [ ! -z heading_numbered ] && [ $heading_numbered  = true ]; then cmd_args+=(-a numbered) ; fi
-    if [ ! -z toc_display ] && [ $toc_display  = true ]
-    then 
-        cmd_args+=(-a toc=$(cleanVar "$toc_align"))
-        cmd_args+=(-a toclevels=$(cleanVar "$toc_levels"))
-        local toctile=$(cleanVar "$toc_title")
+    if [ "$(readVarInYml heading.numbered false)" = true ]; then cmd_args+=(-a numbered) ; fi
+    if [ "$(readVarInYml toc.display true)" = true ]
+    then
+        cmd_args+=(-a toc=$(readVarInYml toc.align right))
+        cmd_args+=(-a toclevels=$(readVarInYml toc.levels 2))
+        local toctile=$(readVarInYml toc.title)
         cmd_args+=(-a toc-title="$toctile")
     fi
     cmd_args+=(-a experimental=true)
 
-
+    ## add extra vars from attributes
+    extraKeys=( $(getExtraMetaKeys) )
+    for key in "${extraKeys[@]}"; do
+      cmd_args+=(-a $key=$(readInMeta $key))
+    done
+  
     output_file_prefix=""
-    if [ ! -z output_prefix ]; then output_file_prefix=$(cleanVar "$output_prefix") ; fi
+    if [ ! -z output_prefix ]; then output_file_prefix=$(readVarInYml output.prefix) ; fi
 
     cmd_args+=(-o $destination_folder/$output_file_prefix$filename.pdf)
     
@@ -44,17 +50,10 @@ function process {
 
     asciidoctor-pdf "${cmd_args[@]}" "$source_folder/.$filename.adoc"
 
-    echo "  → file generated: "$output_file_prefix$filename.pdf
-}
-
-function postprocess {
-    local input_file=$1
-    local source_folder=$2
-    local destination_folder=$3
-    local filename=$4
-    
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
     
     chown $PID:$GID $destination_folder/$output_file_prefix$filename.pdf
+
+    echo $output_file_prefix$filename.pdf
 }

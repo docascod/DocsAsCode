@@ -28,19 +28,13 @@ function process {
     asciidoctor-revealjs $options_diagram $options_style $options_higlighter $source_folder/.$filename.adoc $options_output
     chmod -R a+w $custom_destination_folder/
     
-    echo "  → file generated: "$filename.html
 
-    decktape automatic $custom_destination_folder/$filename.html $custom_destination_folder/$filename.pdf >> /dev/null
-    echo "  → file generated: "$filename.pdf
-}
-
-function postprocess {
-    local input_file=$1
-    local source_folder=$2
-    local destination_folder=$3
-    local filename=$4
+    # decktape automatic $custom_destination_folder/$filename.html $custom_destination_folder/$filename.pdf >> /dev/null
+    # echo "  → file generated: "$filename.pdf
 
     rm -f $source_folder/.$filename.adoc
     
     chown $PID:$GID $custom_destination_folder/$filename.html $custom_destination_folder/$filename.pdf
+
+    echo $filename.html
 }
