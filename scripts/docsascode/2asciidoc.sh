@@ -1,7 +1,7 @@
 #! /bin/bash
 # set -xe
 
-source yq_functions.sh
+# source yq_functions.sh
 
 if [ "$#" -ne 2 ]; then
     printf "Illegal number of parameters\n"
