@@ -153,7 +153,7 @@ RUN wget $(curl -s https://api.github.com/repos/mikefarah/yq/releases/latest | g
 
 # ----- DocsAsCode -----
 
-ADD scripts/docsascode/*.tex /usr/local/bin/templates/
+# ADD scripts/docsascode/*.tex /usr/local/bin/templates/
 ADD scripts/docsascode/*.lua /usr/local/bin/templates/
 ADD scripts/docsascode/*.sh /usr/local/bin/
 

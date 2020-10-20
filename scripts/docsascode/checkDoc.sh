@@ -73,7 +73,7 @@ function check_doc {
 
         source $current_exe_folder/check.dac
 
-        echo -e "\nprocess file: "$1
+        printf "\nprocess file: "$1"\n"
 
         #merge all .dict file into a single with pws header and remove blank lines
         cat $current_exe_folder/*.dict >> $current_exe_folder/.GLOBAL.dict 2>/dev/null
@@ -105,7 +105,7 @@ do
             shift
             ;;
     *)
-            echo "extension not supported. only rst,md, adoc."
+            printf "extension not supported. only rst,md, adoc.\n"
             exit -1
             ;;
     esac

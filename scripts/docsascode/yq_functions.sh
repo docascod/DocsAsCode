@@ -44,12 +44,12 @@ function testreadVarInYml {
   printf "a:\n  b: c\n  e: ~\n" > $ymlFile
 
   cat $ymlFile
-  if [ "$(readVarInYml a.b D)" != 'c' ];  then echo "exit 1: $(readVarInYml a.b D)"; fi
-  if [ "$(readVarInYml a.b)" != 'c' ];    then echo "exit 2: $(readVarInYml a.b)"; fi
-  if [ "$(readVarInYml a.c D)" != 'D' ];  then echo "exit 3: $(readVarInYml a.c D)"; fi
-  if [ "$(readVarInYml a.c)" != '' ];     then echo "exit 4: $(readVarInYml a.c)"; fi
-  if [ "$(readVarInYml a.e D)" != 'D' ];  then echo "exit 5: $(readVarInYml a.e D)"; fi
-  if [ "$(readVarInYml a.e)" != '' ];     then echo "exit 6: $(readVarInYml a.e)"; fi
+  if [ "$(readVarInYml a.b D)" != 'c' ];  then printf "exit 1: $(readVarInYml a.b D)\n"; fi
+  if [ "$(readVarInYml a.b)" != 'c' ];    then printf "exit 2: $(readVarInYml a.b)\n"; fi
+  if [ "$(readVarInYml a.c D)" != 'D' ];  then printf "exit 3: $(readVarInYml a.c D)\n"; fi
+  if [ "$(readVarInYml a.c)" != '' ];     then printf "exit 4: $(readVarInYml a.c)\n"; fi
+  if [ "$(readVarInYml a.e D)" != 'D' ];  then printf "exit 5: $(readVarInYml a.e D)\n"; fi
+  if [ "$(readVarInYml a.e)" != '' ];     then printf "exit 6: $(readVarInYml a.e)\n"; fi
 
   rm -rf /tmp/test.yml
   ymlFile=$tmpYmlFile

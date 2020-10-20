@@ -16,12 +16,14 @@ function build_doc {
 
   [[ ! -z "$DEFAULT_DESTINATION" ]] && destination_folder=$DEFAULT_DESTINATION
 
-  echo "process file: "$filenameWithExtension
+  printf "process file: "$filenameWithExtension"\n"
 
   # prepare outputs
   initMeta $input_file
-  local meta_outputs=( $(readInMeta keywords $DEFAULT_OUTPUT) )
 
+  local meta_outputs=$(readInMeta keywords $DEFAULT_OUTPUT)
+  meta_outputs=(${meta_outputs//,/ })
+  
   # clean array
   declare -a outputs_arr
   for output in "${meta_outputs[@]}"; do
@@ -83,7 +85,7 @@ function build_doc {
       # cp basic asciidoctor themes for dac theme extend
       cp -rf $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
 
-      echo " - process output: "$output
+      printf " - process output: "$output"\n"
 
       # prepare to launch commands to produce output
       rm -f $ymlFile 
@@ -94,8 +96,14 @@ function build_doc {
       source $current_output_template_path/build.dac
 
        # launch process
-      process $input_file $pathname $destination_folder $filenameNoExtension
-      postprocess $input_file $pathname $destination_folder $filenameNoExtension
+      resultFile=$(process $input_file $pathname $destination_folder $filenameNoExtension)
+
+      if [ -f $destination_folder/$resultFile ]; then
+        printf "  → file generated: "$resultFile"\n"
+        generatedFiles+=( "$destination_folder$resultFile" )
+      else
+        printf "  → NO file generated\n"
+      fi
 
        # clear temp folder
        rm -rf $current_output_template_path
@@ -103,7 +111,6 @@ function build_doc {
 
   # remove ouput copy
   rm -rf /_output/
-
 }
 
 [[ -z "$DEFAULT_OUTPUT" ]] && DEFAULT_OUTPUT=output.document
@@ -121,7 +128,7 @@ do
             shift
             ;;
     *)
-            echo "extension not supported. only rst,md, adoc."
+            printf "extension not supported. only rst,md, adoc.\n"
             exit -1
             ;;
     esac

@@ -50,17 +50,10 @@ function process {
 
     asciidoctor-pdf "${cmd_args[@]}" "$source_folder/.$filename.adoc"
 
-    echo "  → file generated: "$output_file_prefix$filename.pdf
-}
-
-function postprocess {
-    local input_file=$1
-    local source_folder=$2
-    local destination_folder=$3
-    local filename=$4
-
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
     
     chown $PID:$GID $destination_folder/$output_file_prefix$filename.pdf
+
+    echo $output_file_prefix$filename.pdf
 }

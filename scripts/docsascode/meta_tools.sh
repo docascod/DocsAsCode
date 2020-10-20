@@ -5,7 +5,7 @@ metaFile=/tmp/meta.yml
 
 function initMeta {
   if [ "$#" -ne 1 ]; then
-    echo "Illegal number of parameters"
+    printf "Illegal number of parameters\n"
     exit -1
   fi
 
@@ -34,7 +34,7 @@ function initMeta {
     ;;
   
   *)
-    echo "extension not supported. only rst,md, adoc."
+    printf "extension not supported. only rst,md, adoc.\n"
     exit -1
     ;;
   esac
