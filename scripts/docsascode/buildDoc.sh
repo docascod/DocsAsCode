@@ -80,6 +80,14 @@ function build_doc {
           # remove temp yaml folder
           rm -rf $current_output_template_path/yaml_tmp/
 
+          # Check if any fonts dir exists in the template and add any ttf file from it
+          for font in $(ls $output_path/*.ttf 2>/dev/null)
+          do
+            if [ ! -f $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/$i ]
+            then
+                cp -f $font $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/
+            fi
+          done
       done
 
       # cp basic asciidoctor themes for dac theme extend
