@@ -24,10 +24,11 @@ case "$1" in
         cd $currenttmpdir
         sed -i "s/<kbd>\(.*\)<\/kbd>/kbd:\[\1\]/g" $filenametmp
         sed -i "s/==\([^=].*[^=]\)==/[.yellow-background]#\1#/g" $filenametmp
-        sed -i -e "s/<!-- table_hide -->/\/\/ hidetable/g" $filenametmp
+        ## translate comments in adoc format before conversion (because pandoc remove it)
+        sed -i -e "s/<!-- \(.*\) -->/\n\/\/ \1\n/g" $filenametmp
 
         pandoc -s -f markdown-smart -t asciidoctor --shift-heading-level-by=-1  $filenametmp -o $2
-
+        
         # go back into working dir
         cd $workingdir
         # fix attributes bad convertion
@@ -38,7 +39,11 @@ case "$1" in
         # fix bug with enbeded rst -> go into input folder
         cd $currenttmpdir
         pandoc -s -f rst -t rst $filenametmp -o $2.tmp
+
         sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
+
+        sed -i -e "s/^.. container:: ifeval \(.*\)$/\n\/\/ ifeval \1\n/g" $2.tmp
+        sed -i -e "s/^.. container:: end_ifeval$/\n\/\/ end_ifeval \n/g" $2.tmp
 
         sed -i -e "s/^\([ \t]*\).. container:: sliderow/\1$twoColsStart/g" $2.tmp
         sed -i -e "s/^\([ \t]*\).. container:: slidecol/\1$twoColsRow/g" $2.tmp
@@ -51,6 +56,7 @@ case "$1" in
         sed -i -e "s/:download:\`\(.*\)\`/\`\1\`_/g" $2.tmp
 
         pandoc -s -f rst -t asciidoctor $2.tmp -o $2
+        
         rm -f $2.tmp 
         # go back into working dir
         cd $workingdir
@@ -62,7 +68,7 @@ case "$1" in
         sed -i -e "/^\.Tip/d" $2
         sed -i -e "/^\.Caution/d" $2
         sed -i -e "/^\.Important/d" $2
-
+        
         ;;
 *.adoc )
         cp $1 $2
@@ -78,6 +84,10 @@ rm -f $tmpfile
 # add fullwidth on tables and autowidth on columns
 # if [ "$(readVarInYml table.fullwidth false)" = true ]; then sed -i "s/\[cols=/\[%autowidth.stretch,cols=/g" $2 ; fi
 
+# ifeval support
+sed -i "s/\/\/ ifeval \(.*\)$/ifeval::\[\1\]/g" $2
+sed -i "s/\/\/ end_ifeval/endif::\[\]/g" $2
+
 # fix image bloc vs inline
 sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2
 
@@ -86,9 +96,9 @@ sed -i "s/* ☒ /* [x] /g" $2
 sed -i "s/* ☐ /* [ ] /g" $2
 
 # multi columns
-sed -i ':a;N;$!ba;s/\/\/ hidetable\n\n\[cols/hidetable\[%autowidth.stretch,frame=none,grid=none,stripes=none,cols/g' $2
-sed -i -e 's/hidetable\[\(.*\),options="header",\]/\[\1\]/g' $2
-sed -i -e 's/hidetable\(.*\)/\1/g' $2
+sed -i ':a;N;$!ba;s/\/\/ table_hide\n\n\[cols/table_hide\[%autowidth.stretch,frame=none,grid=none,stripes=none,cols/g' $2
+sed -i -e 's/table_hide\[\(.*\),options="header",\]/\[\1\]/g' $2
+sed -i -e 's/table_hide\(.*\)/\1/g' $2
 
 sed -i -e "s/\([ \t]*\)$twoColsStart/\1\[cols=2*a,%autowidth.stretch,frame=none,grid=none,stripes=none\]\n|===/g" $2
 sed -i -e "s/\([ \t]*\)$twoColsRow/\1|/g" $2

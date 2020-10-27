@@ -18,12 +18,14 @@ function initMeta {
   case "$1" in
   *.md ) 
     pandoc -s -f markdown-smart -t json --shift-heading-level-by=-1 $1 | yq r - meta -P > $metaFile
+    # cp $metaFile /documents/metamd.yaml
     ;;
 
   *.rst )
     local workingdir=$PWD
     cd $currentdir
     pandoc -s -f rst -t json $1 | yq r - meta -P > $metaFile
+    # cp $metaFile /documents/metarst.yaml
     cd $workingdir
     ;;
 
@@ -62,13 +64,13 @@ function readInMeta {
     ## get value
     result=$(yq r --defaultValue __NOTHING__ $metaFile $varPath.c.*.c)
     ## if nothing in result 
-    if [ "$result" = '__NOTHING__' ] 
+    if [ "$result" = '__NOTHING__' ]
     then
       echo $defaultVal
     else
       echo $result
     fi
-  elif [ "$type" = 'MetaList' ]
+  elif [ "$type" = 'MetaList' ] || [ "$type" = 'MetaBlocks' ]
   then 
     result=$(yq r --defaultValue __NOTHING__ $metaFile $varPath.c.*.c.*.c)
     if [ "$result" = '__NOTHING__' ]
@@ -82,18 +84,15 @@ function readInMeta {
 
 # return only extra meta keys : not 'title', 'author', 'keywords',  'date', 'lang'
 function getExtraMetaKeys {
-
   local classicalKeys=("title", "author", "keywords", "date", "lang")
   
   local allKeys=( $(yq r --printMode p $metaFile '*') )
-
   declare -a extraKeys
 
   for elem in "${allKeys[@]}"
   do 
     [[ ! " ${classicalKeys[*]} " == *"$elem"* ]] && extraKeys+=( "$elem" ) 
   done
-
   echo ${extraKeys[@]}
 }
 
