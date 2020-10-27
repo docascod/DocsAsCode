@@ -47,13 +47,10 @@ function process {
     cmd_args+=(-o $destination_folder/$output_file_prefix$filename.pdf)
     
     2asciidoc.sh $input_file $source_folder/.$filename.adoc
-
     asciidoctor-pdf "${cmd_args[@]}" "$source_folder/.$filename.adoc"
 
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
     
-    chown $PID:$GID $destination_folder/$output_file_prefix$filename.pdf
-
     echo $output_file_prefix$filename.pdf
 }

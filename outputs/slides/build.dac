@@ -53,7 +53,5 @@ function process {
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
     
-    chown $PID:$GID $destination_folder/$output_file_prefix$filename.pdf
-
     echo $output_file_prefix$filename.pdf
 }

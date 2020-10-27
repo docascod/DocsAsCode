@@ -109,6 +109,7 @@ function build_doc {
       if [ -f $destination_folder/$resultFile ]; then
         printf "  → file generated: "$resultFile"\n"
         generatedFiles+=( "$destination_folder$resultFile" )
+        chown $PID:$GID $destination_folder$resultFile
       else
         printf "  → NO file generated\n"
       fi
