@@ -127,6 +127,7 @@ sed -i -e "s/\[source,plantuml/\[plantuml/g" $2
 sed -i -e "s/\[source,vega-lite/\[vegalite/g" $2
 sed -i -e "s/\[source,vegalite/\[vegalite/g" $2
 sed -i -e "s/\[source,vega/\[vega/g" $2
+sed -i -e "s/\[source,gnuplot/\[gnuplot/g" $2
 
 # force break before subtitles
 # if [ "$(readVarInYml heading.h2.breakbefore false)" = true ]; then sed -i -e 's/^== /<<<\n== /g' $2 ; fi
