@@ -43,13 +43,13 @@ case "$1" in
         sed -i -e "s/\.\. container:: newslide/<<</g" $2.tmp
 
         sed -i -e "s/^.. container:: ifeval \(.*\)$/\n\/\/ ifeval \1\n/g" $2.tmp
-        sed -i -e "s/^.. container:: end_ifeval$/\n\/\/ end_if \n/g" $2.tmp
+        sed -i -e "s/^.. container:: end_ifeval$/\n\/\/ end_ifeval \n/g" $2.tmp
 
         sed -i -e "s/^.. container:: ifdef \(.*\)$/\n\/\/ ifdef \1\n/g" $2.tmp
-        sed -i -e "s/^.. container:: end_ifdef$/\n\/\/ end_if \n/g" $2.tmp
+        sed -i -e "s/^.. container:: end_ifdef$/\n\/\/ end_ifdef \n/g" $2.tmp
 
         sed -i -e "s/^.. container:: ifndef \(.*\)$/\n\/\/ ifndef \1\n/g" $2.tmp
-        sed -i -e "s/^.. container:: end_ifndef$/\n\/\/ end_if \n/g" $2.tmp
+        sed -i -e "s/^.. container:: end_ifndef$/\n\/\/ end_ifndef \n/g" $2.tmp
 
         sed -i -e "s/^\([ \t]*\).. container:: sliderow/\1$twoColsStart/g" $2.tmp
         sed -i -e "s/^\([ \t]*\).. container:: slidecol/\1$twoColsRow/g" $2.tmp
@@ -99,7 +99,9 @@ sed -i "s/\/\/ ifdef \(.*\)$/ifdef::\1\[\]/g" $2
 # ifndef support
 sed -i "s/\/\/ ifndef \(.*\)$/ifndef::\1\[\]/g" $2
 
-sed -i "s/\/\/ end_if/endif::\[\]/g" $2
+sed -i "s/\/\/ end_ifeval/endif::\[\]/g" $2
+sed -i "s/\/\/ end_ifdef/endif::\[\]/g" $2
+sed -i "s/\/\/ end_ifndef/endif::\[\]/g" $2
 
 # fix image bloc vs inline
 sed -i "s/^image:\([^:].*\)\[\([^]]*\)\]$/image::\1[\2]/g" $2

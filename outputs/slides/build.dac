@@ -37,7 +37,8 @@ function process {
     ## add extra vars from attributes
     extraKeys=( $(getExtraMetaKeys) )
     for key in "${extraKeys[@]}"; do
-      cmd_args+=(-a $key=$(readInMeta $key))
+      meta=$(readInMeta $key)
+      cmd_args+=(-a $key="$meta")
     done
 
     output_file_prefix=""

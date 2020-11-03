@@ -37,7 +37,8 @@ function process {
     ## add extra vars from attributes
     extraKeys=( $(getExtraMetaKeys) )
     for key in "${extraKeys[@]}"; do
-      cmd_args+=(-a $key=$(readInMeta $key))
+      meta=$(readInMeta $key)
+      cmd_args+=(-a $key="$meta")
     done
   
     output_file_prefix=""
@@ -47,7 +48,6 @@ function process {
     
     2asciidoc.sh $input_file $source_folder/.$filename.adoc
     asciidoctor-pdf "${cmd_args[@]}" "$source_folder/.$filename.adoc"
-
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
     
