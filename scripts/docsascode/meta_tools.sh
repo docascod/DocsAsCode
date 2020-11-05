@@ -27,8 +27,10 @@ function initMeta {
   *.rst )
     local workingdir=$PWD
     cd $currentdir
-    pandoc -s -f rst -t json $1 | yq r - meta -P > $meta_from_currentfile
+    pandoc -s -f rst -t rst $filename -o /tmp/fullrst.rst
+    pandoc -s -f rst -t json $filename | yq r - meta -P > $meta_from_currentfile
     # cp $meta_from_currentfile /documents/metarst.yaml
+    rm -r /tmp/fullrst.rst
     cd $workingdir
     ;;
 
@@ -46,12 +48,14 @@ function initMeta {
 
   ## try to link meta from external global meta file (indicated with extra_meta key)
   global_meta_file=$(readInMeta extra_meta $global_meta_file)
-  if [ ! $global_meta_file = '__NOFILE__' ] && [ ! -f $currentdir/$global_meta_file ]; then
-    printf "extra metadata file "$global_meta_file" not exists -> ignored\n"
-    global_meta_file="__NOFILE__"
-  elif ! yq validate $global_meta_file; then 
-    printf "extra metadata file is not valid\n"
-    global_meta_file="__NOFILE__"
+  if [ ! $global_meta_file = '__NOFILE__' ]; then
+    if [ ! -f $currentdir/$global_meta_file ]; then
+      printf "extra metadata file "$global_meta_file" not exists -> ignored\n"
+      global_meta_file="__NOFILE__"
+    elif ! yq validate $global_meta_file; then 
+      printf "extra metadata file is not valid\n"
+      global_meta_file="__NOFILE__"
+    fi
   fi
 
   ## try to link meta from associated meta file (current file with extra meta extension)
