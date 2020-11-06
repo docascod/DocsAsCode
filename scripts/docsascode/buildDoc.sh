@@ -60,62 +60,72 @@ function build_doc {
 
       local output_path=/_
       
+      printf " - process output: "$output"\n"
+
       # foreach part of the output
       for i in "${pathArray[@]}"; do
           # add this part to the source path
           output_path+=$i/
           
-          # move yaml config files in temp folder to prevent current config crush
-          mkdir $current_output_template_path/yaml_tmp
-          mv $output_path/config.yml $current_output_template_path/yaml_tmp/ 2>/dev/null
-          mv $output_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/ 2>/dev/null          
-          
-          # force files (only) copy on destination path
-          cp -f $output_path/* $current_output_template_path 2>/dev/null
-          
-          # merge new config on previous
-          mergeYml $current_output_template_path/config.yml $current_output_template_path/yaml_tmp/config.yml
-          mergeYml $current_output_template_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/dac_custom-theme.yml
+          if [ -d "$output_path" ]; then
 
-          # remove temp yaml folder
-          rm -rf $current_output_template_path/yaml_tmp/
+            # move yaml config files in temp folder to prevent current config crush
+            mkdir $current_output_template_path/yaml_tmp
+            mv $output_path/config.yml $current_output_template_path/yaml_tmp/ 2>/dev/null
+            mv $output_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/ 2>/dev/null          
+            
+            # force files (only) copy on destination path
+            cp -f $output_path/* $current_output_template_path 2>/dev/null
+            
+            # merge new config on previous
+            mergeYml $current_output_template_path/config.yml $current_output_template_path/yaml_tmp/config.yml
+            mergeYml $current_output_template_path/dac_custom-theme.yml $current_output_template_path/yaml_tmp/dac_custom-theme.yml
+  
+            # remove temp yaml folder
+            rm -rf $current_output_template_path/yaml_tmp/
+  
+            # Check if any fonts dir exists in the template and add any ttf file from it
+            for font in $(ls $output_path/*.ttf 2>/dev/null)
+            do
+              if [ ! -f $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/$i ]
+              then
+                  cp -f $font $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/
+              fi
+            done
 
-          # Check if any fonts dir exists in the template and add any ttf file from it
-          for font in $(ls $output_path/*.ttf 2>/dev/null)
-          do
-            if [ ! -f $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/$i ]
-            then
-                cp -f $font $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/fonts/
-            fi
-          done
+          else
+            printf "  → output ["$output"] not found\n"  >&2
+          fi
       done
 
-      # cp basic asciidoctor themes for dac theme extend
-      cp -rf $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
+      if [ -d "$output_path" ]; then
 
-      printf " - process output: "$output"\n"
+        # cp basic asciidoctor themes for dac theme extend
+        cp -rf $(gem environment gemdir)/gems/asciidoctor-pdf-$ASCIIDOCTOR_PDF_VERSION/data/themes/* $current_output_template_path/
+    
+        # prepare to launch commands to produce output
+        rm -f $ymlFile 
+        mergeYml $ymlFile $current_output_template_path/config.yml
+        mergeYml $ymlFile $current_output_template_path/dac-theme.yml
+        mergeYml $ymlFile $current_output_template_path/dac_custom-theme.yml
+  
+        source $current_output_template_path/build.dac
+  
+         # launch process
+        resultFile=$(process $input_file $pathname $destination_folder $filenameNoExtension)
+  
+        if [ -f $destination_folder/$resultFile ]; then
+          printf "  → file generated: "$resultFile"\n"
+          generatedFiles+=( "$destination_folder$resultFile" )
+          chown $PID:$GID $destination_folder$resultFile
+        else
+          printf "  → File ["$destination_folder$resultFile"] NOT generated\n" >&2
+        fi
+  
+         # clear temp folder
+         rm -rf $current_output_template_path
 
-      # prepare to launch commands to produce output
-      rm -f $ymlFile 
-      mergeYml $ymlFile $current_output_template_path/config.yml
-      mergeYml $ymlFile $current_output_template_path/dac-theme.yml
-      mergeYml $ymlFile $current_output_template_path/dac_custom-theme.yml
-
-      source $current_output_template_path/build.dac
-
-       # launch process
-      resultFile=$(process $input_file $pathname $destination_folder $filenameNoExtension)
-
-      if [ -f $destination_folder/$resultFile ]; then
-        printf "  → file generated: "$resultFile"\n"
-        generatedFiles+=( "$destination_folder$resultFile" )
-        chown $PID:$GID $destination_folder$resultFile
-      else
-        printf "  → NO file generated\n"
-      fi
-
-       # clear temp folder
-       rm -rf $current_output_template_path
+       fi
   done
 
   # remove ouput copy
