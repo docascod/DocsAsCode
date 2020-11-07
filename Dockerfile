@@ -132,6 +132,8 @@ ADD scripts/mermaid/mmdc /usr/local/bin/mmdc
 COPY --from=node_builder /vega /vega
 ENV PATH="/vega/node_modules/vega-cli/bin:/vega/node_modules/vega-lite/bin:${PATH}"
 
+# gnuplot installation
+
 # Pandoc installation
 COPY --from=pandoc_builder /pandoc /pandoc
 ENV PATH="/pandoc/bin:${PATH}"
@@ -139,11 +141,12 @@ ENV PATH="/pandoc/bin:${PATH}"
 # Grammalecte installation
 COPY --from=grammalecte_builder /grammalecte /grammalecte
 
-# aspell installation
+# aspell && gnuplot installation
 RUN apk add --no-cache \
     aspell \
     aspell-en \
-    aspell-fr
+    aspell-fr \
+    gnuplot
 
 RUN rm -rf /var/cache/apk/*
 

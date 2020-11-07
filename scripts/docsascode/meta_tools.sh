@@ -1,7 +1,9 @@
 #! /bin/bash
 # set -xe
 
-metaFile=/tmp/meta.yml
+meta_from_currentfile=/tmp/meta.yml
+global_meta_file="__NOFILE__"
+associated_meta_file="__NOFILE__"
 
 function initMeta {
   if [ "$#" -ne 1 ]; then
@@ -12,24 +14,29 @@ function initMeta {
   local currentdir="$(dirname "$1")"
   local filename="$(basename -- "$1")"
 
-  rm -f $metaFile 2>/dev/null
-  touch $metaFile
+  rm -f $meta_from_currentfile 2>/dev/null
+  touch $meta_from_currentfile
 
+  ## try to extract meta from current document
   case "$1" in
   *.md ) 
-    pandoc -s -f markdown-smart -t json --shift-heading-level-by=-1 $1 | yq r - meta -P > $metaFile
+    pandoc -s -f markdown-smart -t json --shift-heading-level-by=-1 $1 | yq r - meta -P > $meta_from_currentfile
+    # cp $meta_from_currentfile /documents/metamd.yaml
     ;;
 
   *.rst )
     local workingdir=$PWD
     cd $currentdir
-    pandoc -s -f rst -t json $1 | yq r - meta -P > $metaFile
+    pandoc -s -f rst -t rst $filename -o /tmp/fullrst.rst
+    pandoc -s -f rst -t json $filename | yq r - meta -P > $meta_from_currentfile
+    # cp $meta_from_currentfile /documents/metarst.yaml
+    rm -r /tmp/fullrst.rst
     cd $workingdir
     ;;
 
   *.adoc )
     asciidoctor $1 -a doctype=book -o /tmp/asciidoctmp.html
-    pandoc -s -f html -t json $1 | yq r - meta -P > $metaFile
+    pandoc -s -f html -t json $1 | yq r - meta -P > $meta_from_currentfile
     rm -f /tmp/asciidoctmp.html 2>/dev/null
     ;;
   
@@ -38,55 +45,81 @@ function initMeta {
     exit -1
     ;;
   esac
+
+  ## try to link meta from external global meta file (indicated with extra_meta key)
+  global_meta_file=$(readInMeta extra_meta $global_meta_file)
+  if [ ! $global_meta_file = '__NOFILE__' ]; then
+    if [ ! -f $currentdir/$global_meta_file ]; then
+      printf "extra metadata file "$global_meta_file" not exists -> ignored\n"
+      global_meta_file="__NOFILE__"
+    elif ! yq validate $global_meta_file; then 
+      printf "extra metadata file is not valid\n"
+      global_meta_file="__NOFILE__"
+    fi
+  fi
+
+  ## try to link meta from associated meta file (current file with extra meta extension)
+  associated_meta_file=$1".meta"
+  if [ ! -f $associated_meta_file ]; then
+    associated_meta_file="__NOFILE__"
+  elif ! yq validate $associated_meta_file; then 
+    printf "extra metadata file is not valid\n"
+    associated_meta_file="__NOFILE__"
+  fi
 }
 
 function readInMeta {
   local varPath=$1
   local defaultVal=""
+  local result="__NOTHING__"
 
   ## if have a second param (default value)
-  if [[ "$#" == 2 ]]; then
+  if [ "$#" == 2 ]; then
     defaultVal=$2
   fi
 
-  local result=""
-  ## type of param (single or list)
-  local type=$(yq r --defaultValue __NOTHING__ $metaFile $varPath.t)
-  ## if type not found => default value
-  if [ "$type" = '__NOTHING__' ]
-  then
+  ## search path in global meta
+  [ $global_meta_file != '__NOFILE__' ] && result=$(yq r --defaultValue __NOTHING__ $global_meta_file $varPath)
+
+  if [ "$result" = '__NOTHING__' ]; then
+
+    ## or search path in associated meta
+    [ $associated_meta_file != '__NOFILE__' ] && result=$(yq r --defaultValue __NOTHING__ $associated_meta_file $varPath)
+    if [ "$result" = '__NOTHING__' ]; then
+
+      ## finaly search meta in current doc meta
+      ## type of param (single or multiple
+      local type=$(yq r --defaultValue __NOTYPE__ $meta_from_currentfile $varPath.t)
+  
+      case "$type" in
+        '__NOTYPE__' )
+          result="__NOTHING__"
+          ;;
+        'MetaInlines' )
+          result=$(yq r --defaultValue __NOTHING__ $meta_from_currentfile $varPath.c.*.c)
+          ;;
+        'MetaList' | 'MetaBlocks' )
+          result=$(yq r --defaultValue __NOTHING__ $meta_from_currentfile $varPath.c.*.c.*.c)
+          ## TODO return nice array
+          ;;
+      esac
+
+    fi
+
+  fi
+
+  if [ "$result" = '__NOTHING__' ]; then 
     echo $defaultVal
-    ## if type is single
-  elif [ "$type" = 'MetaInlines' ]
-  then
-    ## get value
-    result=$(yq r --defaultValue __NOTHING__ $metaFile $varPath.c.*.c)
-    ## if nothing in result 
-    if [ "$result" = '__NOTHING__' ] 
-    then
-      echo $defaultVal
-    else
-      echo $result
-    fi
-  elif [ "$type" = 'MetaList' ]
-  then 
-    result=$(yq r --defaultValue __NOTHING__ $metaFile $varPath.c.*.c.*.c)
-    if [ "$result" = '__NOTHING__' ]
-    then
-      echo $defaultVal
-    else
-      echo $result      
-    fi
+  else
+    echo $result      
   fi
 }
 
 # return only extra meta keys : not 'title', 'author', 'keywords',  'date', 'lang'
 function getExtraMetaKeys {
-
-  local classicalKeys=("title", "author", "keywords", "date", "lang")
+  local classicalKeys=("title", "author", "keywords", "date", "lang", "extra_meta")
   
-  local allKeys=( $(yq r --printMode p $metaFile '*') )
-
+  local allKeys=( $(yq r --printMode p $meta_from_currentfile '*') )
   declare -a extraKeys
 
   for elem in "${allKeys[@]}"
@@ -94,6 +127,21 @@ function getExtraMetaKeys {
     [[ ! " ${classicalKeys[*]} " == *"$elem"* ]] && extraKeys+=( "$elem" ) 
   done
 
+  [ $associated_meta_file != '__NOFILE__' ] && allKeysExtraAssociated=( $(yq r --printMode p $associated_meta_file '*') )
+  for elem in "${allKeysExtraAssociated[@]}"
+  do 
+    if [[ ! " ${classicalKeys[*]} " == *"$elem"* ]] && [[ ! " ${extraKeys[*]} " ==  *"$elem"* ]]; then 
+      extraKeys+=( "$elem" )
+    fi
+  done
+
+  [ $global_meta_file != '__NOFILE__' ] && allKeysExtra=( $(yq r --printMode p $global_meta_file '*') )
+  for elem in "${allKeysExtra[@]}"
+  do 
+    if [[ ! " ${classicalKeys[*]} " == *"$elem"* ]] && [[ ! " ${extraKeys[*]} " ==  *"$elem"* ]]; then 
+      extraKeys+=( "$elem" )
+    fi
+  done
   echo ${extraKeys[@]}
 }
 

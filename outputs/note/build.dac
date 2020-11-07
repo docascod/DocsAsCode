@@ -1,6 +1,5 @@
 #! /bin/bash
 # set -xe
-source meta_tools.sh
 
 function process {
     local input_file=$1
@@ -38,7 +37,8 @@ function process {
     ## add extra vars from attributes
     extraKeys=( $(getExtraMetaKeys) )
     for key in "${extraKeys[@]}"; do
-      cmd_args+=(-a $key=$(readInMeta $key))
+      meta=$(readInMeta $key)
+      cmd_args+=(-a $key="$meta")
     done
 
     output_file_prefix=""
@@ -53,7 +53,5 @@ function process {
     rm -rf $destination_folder/.asciidoctor/
     rm -f $source_folder/.$filename.adoc
     
-    chown $PID:$GID $destination_folder/$output_file_prefix$filename.pdf
-
     echo $output_file_prefix$filename.pdf
 }
