@@ -20,7 +20,7 @@ function initMeta {
   ## try to extract meta from current document
   case "$1" in
   *.md ) 
-    pandoc -s -f markdown-smart -t json --shift-heading-level-by=-1 $1 | yq r - meta -P > $meta_from_currentfile
+    pandoc -s -f markdown-smart -t json --shift-heading-level-by=-1 $1 | yq e - meta -P > $meta_from_currentfile
     # cp $meta_from_currentfile /documents/metamd.yaml
     ;;
 
@@ -28,7 +28,7 @@ function initMeta {
     local workingdir=$PWD
     cd $currentdir
     pandoc -s -f rst -t rst $filename -o /tmp/fullrst.rst
-    pandoc -s -f rst -t json $filename | yq r - meta -P > $meta_from_currentfile
+    pandoc -s -f rst -t json $filename | yq e - meta -P > $meta_from_currentfile
     # cp $meta_from_currentfile /documents/metarst.yaml
     rm -r /tmp/fullrst.rst
     cd $workingdir
@@ -36,7 +36,7 @@ function initMeta {
 
   *.adoc )
     asciidoctor $1 -a doctype=book -o /tmp/asciidoctmp.html
-    pandoc -s -f html -t json $1 | yq r - meta -P > $meta_from_currentfile
+    pandoc -s -f html -t json $1 | yq e - meta -P > $meta_from_currentfile
     rm -f /tmp/asciidoctmp.html 2>/dev/null
     ;;
   
@@ -79,27 +79,27 @@ function readInMeta {
   fi
 
   ## search path in global meta
-  [ $global_meta_file != '__NOFILE__' ] && result=$(yq r --defaultValue __NOTHING__ $global_meta_file $varPath)
+  [ $global_meta_file != '__NOFILE__' ] && result=$(yq e "$varPath" // '__NOTHING__' $global_meta_file)
 
   if [ "$result" = '__NOTHING__' ]; then
 
     ## or search path in associated meta
-    [ $associated_meta_file != '__NOFILE__' ] && result=$(yq r --defaultValue __NOTHING__ $associated_meta_file $varPath)
+    [ $associated_meta_file != '__NOFILE__' ] && result=$(yq e "$varPath" // '__NOTHING__' $associated_meta_file)
     if [ "$result" = '__NOTHING__' ]; then
 
       ## finaly search meta in current doc meta
       ## type of param (single or multiple
-      local type=$(yq r --defaultValue __NOTYPE__ $meta_from_currentfile $varPath.t)
+      local type=$(yq e "$varPath" // '__NOTYPE__' $meta_from_currentfile.t)
   
       case "$type" in
         '__NOTYPE__' )
           result="__NOTHING__"
           ;;
         'MetaInlines' )
-          result=$(yq r --defaultValue __NOTHING__ $meta_from_currentfile $varPath.c.*.c)
+          result=$(yq e "$varPath" // '__NOTHING__' $meta_from_currentfile.c.*.c)
           ;;
         'MetaList' | 'MetaBlocks' )
-          result=$(yq r --defaultValue __NOTHING__ $meta_from_currentfile $varPath.c.*.c.*.c)
+          result=$(yq e "$varPath" // '__NOTHING__' $meta_from_currentfile.c.*.c.*.c)
           ## TODO return nice array
           ;;
       esac

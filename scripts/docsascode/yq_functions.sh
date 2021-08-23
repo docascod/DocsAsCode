@@ -8,10 +8,10 @@ function readVarInYml {
   local varValue=""
   if [[ "$#" == 2 ]]; then 
     defaultVal=$2
-    varValue=$(yq r --defaultValue $defaultVal $ymlFile $varPath)
+    varValue=$(yq e "$varPath" // '$defaultVal' $ymlFile)
   else
     defaultVal=""
-    varValue=$(yq r --defaultValue __NOTHING__ $ymlFile $varPath)
+    varValue=$(yq e "$varPath" // '__NOTHING__' $ymlFile)
   fi
   
   if [ "$varValue" = '__NOTHING__' ]
